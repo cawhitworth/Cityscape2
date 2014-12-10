@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
@@ -54,23 +53,16 @@
     <Reference Include="SharpDX.DXGI">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Toolkit">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit.Graphics">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Shaders\PixelShader.hlsl" />
     <Content Include="Shaders\VertexShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
-  <Import Project="..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets" Condition="Exists('..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" />
   <PropertyGroup>
     <PreBuildEvent>$(ProjectDir)Shaders\fxc /T ps_4_0_level_9_1 $(ProjectDir)Shaders\PixelShader.hlsl /Fo PixelShader.cso
 $(ProjectDir)Shaders\fxc /T vs_4_0_level_9_1 $(ProjectDir)Shaders\VertexShader.hlsl /Fo VertexShader.cso</PreBuildEvent>
@@ -78,6 +70,7 @@ $(ProjectDir)Shaders\fxc /T vs_4_0_level_9_1 $(ProjectDir)Shaders\VertexShader.h
   <PropertyGroup>
     <PostBuildEvent>copy $(ProjectDir)texture.png $(ProjectDir)$(OutDir)texture.png</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

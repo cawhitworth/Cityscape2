@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
-using SharpDX.Toolkit.Graphics;
 
 namespace CityScape2
 {
