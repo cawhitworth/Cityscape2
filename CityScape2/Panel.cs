@@ -92,9 +92,9 @@ namespace CityScape2
             return new[]
             {
                 new VertexPosNormalTexture(m_Position, normal, new Vector2(0.0f, 0.0f)),
-                new VertexPosNormalTexture(topLeft, normal, new Vector2(0.0f, 0.0f)),
-                new VertexPosNormalTexture(bottomRight, normal, new Vector2(0.0f, 0.0f)),
-                new VertexPosNormalTexture(oppositeCorner, normal, new Vector2(0.0f, 0.0f)),
+                new VertexPosNormalTexture(topLeft, normal, new Vector2(0.0f, 1.0f)),
+                new VertexPosNormalTexture(bottomRight, normal, new Vector2(1.0f, 0.0f)),
+                new VertexPosNormalTexture(oppositeCorner, normal, new Vector2(1.0f, 1.0f)),
             };
         }
 
