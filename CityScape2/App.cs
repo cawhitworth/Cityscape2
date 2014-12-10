@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using SharpDX;
 using SharpDX.D3DCompiler;
@@ -6,6 +7,7 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.Windows;
+using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 
 namespace CityScape2
@@ -23,6 +25,8 @@ namespace CityScape2
         private Factory m_Factory;
         private PixelShader m_PixelShader;
         private VertexShader m_VertexShader;
+        private InputLayout m_Layout;
+        private Matrix m_Proj;
 
         public void Run()
         {
@@ -41,15 +45,44 @@ namespace CityScape2
 
             RecreateBuffers();
 
+            var vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, new[]
+            {
+                new Vector4(-1.0f, -1.0f, 0.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+                new Vector4(0.0f, 1.0f, 0.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+                new Vector4(1.0f, -1.0f, 0.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+            }));
+
+            var view = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY);
+            var proj = Matrix.Identity;
+
+            var constantBuffer =
+                ToDispose(new Buffer(m_Device, Utilities.SizeOf<Matrix>(), ResourceUsage.Default,
+                    BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+
             RenderLoop.Run(m_Form, () =>
             {
                 if (recreate)
                 {
                     RecreateBuffers();
+                    proj = Matrix.PerspectiveFovLH((float) Math.PI/4.0f, (float) Width/Height, 0.01f, 100.0f);
+                    recreate = false;
                 }
+
+                m_Context.InputAssembler.InputLayout = m_Layout;
+                m_Context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+                m_Context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertices, Utilities.SizeOf<Vector4>() * 2, 0));
+                m_Context.VertexShader.SetConstantBuffer(0, constantBuffer);
+                m_Context.VertexShader.Set(m_VertexShader);
+                m_Context.PixelShader.Set(m_PixelShader);
 
                 m_Context.ClearDepthStencilView(m_DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
                 m_Context.ClearRenderTargetView(m_RenderView, Color.CornflowerBlue);
+
+                var worldViewProj = Matrix.Multiply(view, proj);
+                worldViewProj.Transpose();
+                m_Context.UpdateSubresource(ref worldViewProj, constantBuffer);
+
+                m_Context.Draw(3, 0);
 
                 m_SwapChain.Present(0, PresentFlags.None);
             });
@@ -62,6 +95,12 @@ namespace CityScape2
         {
             var vertShaderBytecode = File.ReadAllBytes("VertexShader.cso");
             m_VertexShader = ToDispose(new VertexShader(m_Device, vertShaderBytecode));
+
+            m_Layout = ToDispose(new InputLayout(m_Device, vertShaderBytecode, new[]
+            {
+                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0,0),
+                new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 16, 0)
+            }));
 
             var pixelShaderBytecode = File.ReadAllBytes("PixelShader.cso");
             m_PixelShader = ToDispose(new PixelShader(m_Device, pixelShaderBytecode));
@@ -135,6 +174,9 @@ namespace CityScape2
                 OptionFlags = ResourceOptionFlags.None
             });
             m_DepthView = new DepthStencilView(m_Device, m_DepthBuffer);
+
+            m_Context.Rasterizer.SetViewport(new Viewport(0, 0, Width, Height, 0.0f, 1.0f));
+            m_Context.OutputMerger.SetTargets(m_DepthView, m_RenderView);
         }
 
     }
