@@ -17,7 +17,7 @@ namespace Tests
         {
             var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XY, Panel.Facing.Out);
 
-            var v = p.GetVertices().ToArray();
+            var v = p.Vertices.ToArray();
 
             var norm = new Vector3(0, 0, -1);
 
@@ -37,7 +37,7 @@ namespace Tests
         {
             var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XY, Panel.Facing.In);
 
-            var v = p.GetVertices().ToArray();
+            var v = p.Vertices.ToArray();
 
             var norm = new Vector3(0, 0, 1);
 
@@ -57,7 +57,7 @@ namespace Tests
         {
             var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XZ, Panel.Facing.Out);
 
-            var v = p.GetVertices().ToArray();
+            var v = p.Vertices.ToArray();
 
             var norm = new Vector3(0, 1, 0);
 
@@ -77,7 +77,7 @@ namespace Tests
         {
             var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XZ, Panel.Facing.In);
 
-            var v = p.GetVertices().ToArray();
+            var v = p.Vertices.ToArray();
 
             var norm = new Vector3(0, -1, 0);
 
@@ -97,7 +97,7 @@ namespace Tests
         {
             var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.YZ, Panel.Facing.Out);
 
-            var v = p.GetVertices().ToArray();
+            var v = p.Vertices.ToArray();
 
             var norm = new Vector3(1, 0, 0);
 
@@ -117,7 +117,7 @@ namespace Tests
         {
             var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.YZ, Panel.Facing.In);
 
-            var v = p.GetVertices().ToArray();
+            var v = p.Vertices.ToArray();
 
             var norm = new Vector3(-1, 0, 0);
 

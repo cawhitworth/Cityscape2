@@ -4,7 +4,7 @@ using SharpDX;
 
 namespace CityScape2
 {
-    public class Panel
+    public class Panel : IGeometry
     {
         private readonly Vector3 m_Position;
         private readonly Vector2 m_Size;
@@ -49,9 +49,9 @@ namespace CityScape2
             m_Vertices = CalculateVertices();
         }
 
-        public IEnumerable<VertexPosNormalTexture> GetVertices()
+        public IEnumerable<VertexPosNormalTexture> Vertices
         {
-            return m_Vertices;
+            get { return m_Vertices; }
         }
 
         private VertexPosNormalTexture[] CalculateVertices()
@@ -98,9 +98,9 @@ namespace CityScape2
             };
         }
 
-        public IEnumerable<ushort> GetIndices()
+        public IEnumerable<ushort> Indices
         {
-            return m_Indices;
+            get { return m_Indices; }
         }
     }
 }

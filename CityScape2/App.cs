@@ -67,12 +67,12 @@ namespace CityScape2
                 MaximumLod = 16
             });
 
-            var panel = new Panel(new Vector3(-1, -1, 0), new Vector2(2, 2), Panel.Plane.XY, Panel.Facing.Out);
+            var box = new Box(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
 
-            var vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, panel.GetVertices().ToArray()));
-            var indices = ToDispose(Buffer.Create(m_Device, BindFlags.IndexBuffer, panel.GetIndices().ToArray()));
+            var vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, box.Vertices.ToArray()));
+            var indices = ToDispose(Buffer.Create(m_Device, BindFlags.IndexBuffer, box.Indices.ToArray()));
 
-            var view = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY);
+            var view = Matrix.LookAtLH(new Vector3(0, 3, -5), new Vector3(0, 0, 0), Vector3.UnitY);
             view.Transpose();
             var proj = Matrix.Identity;
 
@@ -97,7 +97,7 @@ namespace CityScape2
 
                 var elapsed = clock.ElapsedMilliseconds / 1000.0f;
 
-                world = Matrix.RotationY(elapsed*3)*Matrix.RotationX(elapsed*5);
+                world = Matrix.RotationY(elapsed) * Matrix.RotationX(elapsed * 0.7f);
                 world.Transpose();
 
                 m_Context.InputAssembler.InputLayout = m_Layout;
@@ -120,7 +120,7 @@ namespace CityScape2
                 mappedResource.Write(proj);
                 m_Context.UnmapSubresource(constantBuffer, 0);
 
-                m_Context.DrawIndexed(6, 0, 0);
+                m_Context.DrawIndexed(box.Indices.Count(), 0, 0);
 
                 m_SwapChain.Present(0, PresentFlags.None);
             });
@@ -218,7 +218,7 @@ namespace CityScape2
                 )
             {
                 FillMode = FillMode.Solid,
-                CullMode = CullMode.None,
+                CullMode = CullMode.Back,
                 IsFrontCounterClockwise = false,
                 DepthBias = 0,
                 DepthBiasClamp = 0,
