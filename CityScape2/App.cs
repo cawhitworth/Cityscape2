@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
@@ -8,6 +12,7 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.Windows;
 using Buffer = SharpDX.Direct3D11.Buffer;
+using Color = SharpDX.Color;
 using Device = SharpDX.Direct3D11.Device;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 
@@ -62,20 +67,23 @@ namespace CityScape2
                 MaximumLod = 16
             });
 
-            var vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, new float[]
-            {
-                -1.0f, -1.0f, 0.0f,          0.0f, 0.0f, -1.0f,         0.0f, 1.0f,
-                 0.0f,  1.0f, 0.0f,          0.0f, 0.0f, -1.0f,         0.5f, 0.0f,
-                 1.0f, -1.0f, 0.0f,          0.0f, 0.0f, -1.0f,         1.0f, 1.0f,
-            }));
+            var panel = new Panel(new Vector3(-1, -1, 0), new Vector2(2, 2), Panel.Plane.XY, Panel.Facing.Out);
+
+            var vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, panel.GetVertices().ToArray()));
+            var indices = ToDispose(Buffer.Create(m_Device, BindFlags.IndexBuffer, panel.GetIndices().ToArray()));
 
             var view = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY);
             view.Transpose();
             var proj = Matrix.Identity;
 
+            var world = Matrix.Identity;
+
             var constantBuffer =
                 ToDispose(new Buffer(m_Device, Utilities.SizeOf<Matrix>() * 3, ResourceUsage.Dynamic,
                     BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
+
+            var clock = new Stopwatch();
+            clock.Start();
 
             RenderLoop.Run(m_Form, () =>
             {
@@ -87,9 +95,15 @@ namespace CityScape2
                     recreate = false;
                 }
 
+                var elapsed = clock.ElapsedMilliseconds / 1000.0f;
+
+                world = Matrix.RotationY(elapsed*3)*Matrix.RotationX(elapsed*5);
+                world.Transpose();
+
                 m_Context.InputAssembler.InputLayout = m_Layout;
                 m_Context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
                 m_Context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertices, Utilities.SizeOf<Vector3>() * 2 + Utilities.SizeOf<Vector2>(), 0));
+                m_Context.InputAssembler.SetIndexBuffer(indices, Format.R16_UInt, 0);
                 m_Context.VertexShader.SetConstantBuffer(0, constantBuffer);
                 m_Context.VertexShader.Set(m_VertexShader);
                 m_Context.PixelShader.Set(m_PixelShader);
@@ -101,12 +115,12 @@ namespace CityScape2
 
                 DataStream mappedResource;
                 m_Context.MapSubresource(constantBuffer, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
-                mappedResource.Write(Matrix.Identity);
+                mappedResource.Write(world);
                 mappedResource.Write(view);
                 mappedResource.Write(proj);
                 m_Context.UnmapSubresource(constantBuffer, 0);
 
-                m_Context.Draw(3, 0);
+                m_Context.DrawIndexed(6, 0, 0);
 
                 m_SwapChain.Present(0, PresentFlags.None);
             });
@@ -200,6 +214,21 @@ namespace CityScape2
             });
             m_DepthView = new DepthStencilView(m_Device, m_DepthBuffer);
 
+            m_Context.Rasterizer.State = new RasterizerState(m_Device, new RasterizerStateDescription(
+                )
+            {
+                FillMode = FillMode.Solid,
+                CullMode = CullMode.None,
+                IsFrontCounterClockwise = false,
+                DepthBias = 0,
+                DepthBiasClamp = 0,
+                SlopeScaledDepthBias = 0,
+                IsDepthClipEnabled = false,
+                IsScissorEnabled = false,
+                IsMultisampleEnabled = false,
+                IsAntialiasedLineEnabled = false
+
+            });
             m_Context.Rasterizer.SetViewport(new Viewport(0, 0, Width, Height, 0.0f, 1.0f));
             m_Context.OutputMerger.SetTargets(m_DepthView, m_RenderView);
         }

@@ -38,7 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Panel.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="VertexPosNormalTexture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SharpDX">
