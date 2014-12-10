@@ -1,5 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System.IO;
+using System.Windows.Forms;
 using SharpDX;
+using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -8,7 +10,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 namespace CityScape2
 {
-    class App
+    internal class App: Component
     {
         private RenderForm m_Form;
         private Device m_Device;
@@ -19,10 +21,14 @@ namespace CityScape2
         private Texture2D m_DepthBuffer;
         private DepthStencilView m_DepthView;
         private Factory m_Factory;
+        private PixelShader m_PixelShader;
+        private VertexShader m_VertexShader;
 
         public void Run()
         {
             CreateDeviceAndSwapChain();
+
+            LoadShaders();
 
             m_Form.KeyUp += (sender, args) =>
             {
@@ -49,15 +55,31 @@ namespace CityScape2
             });
 
             DisposeBuffers();
-            DisposeDeviceAndSwapChain();
+            Dispose();
         }
 
-        int Width { get { return m_Form.ClientSize.Width; }}
-        int Height { get { return m_Form.ClientSize.Height; }}
+        private void LoadShaders()
+        {
+            var vertShaderBytecode = File.ReadAllBytes("VertexShader.cso");
+            m_VertexShader = ToDispose(new VertexShader(m_Device, vertShaderBytecode));
+
+            var pixelShaderBytecode = File.ReadAllBytes("PixelShader.cso");
+            m_PixelShader = ToDispose(new PixelShader(m_Device, pixelShaderBytecode));
+        }
+
+        private int Width
+        {
+            get { return m_Form.ClientSize.Width; }
+        }
+
+        private int Height
+        {
+            get { return m_Form.ClientSize.Height; }
+        }
 
         private void CreateDeviceAndSwapChain()
         {
-            m_Form = new RenderForm();
+            m_Form = ToDispose(new RenderForm());
 
             var desc = new SwapChainDescription()
             {
@@ -73,21 +95,13 @@ namespace CityScape2
 
             // Create device + swapchain
             Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, desc, out m_Device, out m_SwapChain);
-            m_Context = m_Device.ImmediateContext;
+            m_Context = ToDispose(m_Device.ImmediateContext);
+            m_Device = ToDispose(m_Device);
+            m_SwapChain = ToDispose(m_SwapChain);
 
             // Ignore Windows events
-            m_Factory = m_SwapChain.GetParent<Factory>();
+            m_Factory = ToDispose(m_SwapChain.GetParent<Factory>());
             m_Factory.MakeWindowAssociation(m_Form.Handle, WindowAssociationFlags.IgnoreAll);
-        }
-
-        private void DisposeDeviceAndSwapChain()
-        {
-            m_Context.ClearState();
-            m_Context.Flush();
-            m_Context.Dispose();
-            m_Device.Dispose();
-            m_SwapChain.Dispose();
-            m_Factory.Dispose();
         }
 
         private void DisposeBuffers()
