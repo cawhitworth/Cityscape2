@@ -9,6 +9,7 @@ using SharpDX.DXGI;
 using SharpDX.Windows;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
+using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace CityScape2
 {
@@ -45,19 +46,36 @@ namespace CityScape2
 
             RecreateBuffers();
 
-            var vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, new[]
+            var texture = ToDispose(Texture2D.FromFile<Texture2D>(m_Device, "texture.png"));
+            var textureView = ToDispose(new ShaderResourceView(m_Device, texture));
+            var sampler = new SamplerState(m_Device, new SamplerStateDescription
             {
-                new Vector4(-1.0f, -1.0f, 0.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-                new Vector4(0.0f, 1.0f, 0.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-                new Vector4(1.0f, -1.0f, 0.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+                Filter = Filter.MinMagMipLinear,
+                AddressU = TextureAddressMode.Wrap,
+                AddressV = TextureAddressMode.Wrap,
+                AddressW = TextureAddressMode.Wrap,
+                BorderColor = Color.Black,
+                ComparisonFunction = Comparison.Never,
+                MaximumAnisotropy = 16,
+                MipLodBias = 0,
+                MinimumLod = 0,
+                MaximumLod = 16
+            });
+
+            var vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, new float[]
+            {
+                -1.0f, -1.0f, 0.0f,          0.0f, 0.0f, -1.0f,         0.0f, 1.0f,
+                 0.0f,  1.0f, 0.0f,          0.0f, 0.0f, -1.0f,         0.5f, 0.0f,
+                 1.0f, -1.0f, 0.0f,          0.0f, 0.0f, -1.0f,         1.0f, 1.0f,
             }));
 
             var view = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY);
+            view.Transpose();
             var proj = Matrix.Identity;
 
             var constantBuffer =
-                ToDispose(new Buffer(m_Device, Utilities.SizeOf<Matrix>(), ResourceUsage.Default,
-                    BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                ToDispose(new Buffer(m_Device, Utilities.SizeOf<Matrix>() * 3, ResourceUsage.Dynamic,
+                    BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
 
             RenderLoop.Run(m_Form, () =>
             {
@@ -65,22 +83,28 @@ namespace CityScape2
                 {
                     RecreateBuffers();
                     proj = Matrix.PerspectiveFovLH((float) Math.PI/4.0f, (float) Width/Height, 0.01f, 100.0f);
+                    proj.Transpose();
                     recreate = false;
                 }
 
                 m_Context.InputAssembler.InputLayout = m_Layout;
                 m_Context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                m_Context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertices, Utilities.SizeOf<Vector4>() * 2, 0));
+                m_Context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertices, Utilities.SizeOf<Vector3>() * 2 + Utilities.SizeOf<Vector2>(), 0));
                 m_Context.VertexShader.SetConstantBuffer(0, constantBuffer);
                 m_Context.VertexShader.Set(m_VertexShader);
                 m_Context.PixelShader.Set(m_PixelShader);
+                m_Context.PixelShader.SetSampler(0, sampler);
+                m_Context.PixelShader.SetShaderResource(0, textureView);
 
                 m_Context.ClearDepthStencilView(m_DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
                 m_Context.ClearRenderTargetView(m_RenderView, Color.CornflowerBlue);
 
-                var worldViewProj = Matrix.Multiply(view, proj);
-                worldViewProj.Transpose();
-                m_Context.UpdateSubresource(ref worldViewProj, constantBuffer);
+                DataStream mappedResource;
+                m_Context.MapSubresource(constantBuffer, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
+                mappedResource.Write(Matrix.Identity);
+                mappedResource.Write(view);
+                mappedResource.Write(proj);
+                m_Context.UnmapSubresource(constantBuffer, 0);
 
                 m_Context.Draw(3, 0);
 
@@ -98,8 +122,9 @@ namespace CityScape2
 
             m_Layout = ToDispose(new InputLayout(m_Device, vertShaderBytecode, new[]
             {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0,0),
-                new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 16, 0)
+                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0,0),
+                new InputElement("NORMAL", 0, Format.R32G32B32_Float, 12, 0),
+                new InputElement("TEXCOORD", 0, Format.R32G32_Float, 24, 0), 
             }));
 
             var pixelShaderBytecode = File.ReadAllBytes("PixelShader.cso");
