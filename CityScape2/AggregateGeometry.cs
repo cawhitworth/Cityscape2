@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CityScape2
@@ -22,13 +23,13 @@ namespace CityScape2
         {
             var allIndices = new List<ushort>();
             var allVertices = new List<VertexPosNormalTexture>();
-            var baseIndex = 0;
+            ushort baseIndex = 0;
 
             foreach (var geometry in geometries)
             {
                 allIndices.AddRange(geometry.Indices.Select(i => (ushort) (i + baseIndex)));
                 allVertices.AddRange(geometry.Vertices);
-                baseIndex += geometry.Vertices.Count();
+                baseIndex += (ushort)geometry.Vertices.Count();
             }
             m_Indices = allIndices.ToArray();
             m_Vertices = allVertices.ToArray();

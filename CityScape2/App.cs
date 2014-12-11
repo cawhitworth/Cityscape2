@@ -48,12 +48,13 @@ namespace CityScape2
 
             var city = new City(m_Device, m_Context);
 
-            var view = Matrix.LookAtLH(new Vector3(0, 3, -5), new Vector3(0, 0, 0), Vector3.UnitY);
+            var view = Matrix.LookAtLH(new Vector3(0, 10, -20), new Vector3(0, 0, 0), Vector3.UnitY);
             view.Transpose();
             var proj = Matrix.Identity;
 
             var clock = new Stopwatch();
             clock.Start();
+            var overlay = new Overlay(clock.ElapsedMilliseconds);
 
             RenderLoop.Run(m_Form, () =>
             {
@@ -69,7 +70,8 @@ namespace CityScape2
                 m_Context.ClearDepthStencilView(m_DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
                 m_Context.ClearRenderTargetView(m_RenderView, Color.CornflowerBlue);
 
-                city.Draw(clock.ElapsedMilliseconds, view, proj);
+                var polys = city.Draw(clock.ElapsedMilliseconds, view, proj);
+                overlay.Draw(clock.ElapsedMilliseconds, polys);
 
                 m_SwapChain.Present(0, PresentFlags.None);
             });

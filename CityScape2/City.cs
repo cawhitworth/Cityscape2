@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using SharpDX;
 using SharpDX.Direct3D;
@@ -33,11 +34,17 @@ namespace CityScape2
             LoadShaders();
             LoadTextures();
 
-            var box = new Box(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
+            var boxes = new List<IGeometry>();
 
-            m_Vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, box.Vertices.ToArray()));
-            m_Indices = ToDispose(Buffer.Create(m_Device, BindFlags.IndexBuffer, box.Indices.ToArray()));
-            m_IndexCount = box.Indices.Count();
+            for(int x = -20; x < 20; x++)
+                for (int y = -20; y < 20; y++)
+                    boxes.Add(new Box(new Vector3(x - 0.4f, -0.4f, y - 0.4f), new Vector3(x + 0.4f, 0.4f, y + 0.4f)));
+
+            var aggregate = new AggregateGeometry(boxes);
+
+            m_Vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, aggregate.Vertices.ToArray()));
+            m_Indices = ToDispose(Buffer.Create(m_Device, BindFlags.IndexBuffer, aggregate.Indices.ToArray()));
+            m_IndexCount = aggregate.Indices.Count();
         }
 
         private void LoadTextures()
@@ -80,10 +87,10 @@ namespace CityScape2
 
         }
 
-        public void Draw(long elapsed, Matrix view, Matrix proj)
+        public int Draw(long elapsed, Matrix view, Matrix proj)
         {
             float fElapsed = elapsed / 1000.0f;
-            var world = Matrix.RotationY(fElapsed) * Matrix.RotationX(fElapsed * 0.7f);
+            var world = Matrix.RotationY(fElapsed);// * Matrix.RotationX(fElapsed * 0.7f);
             world.Transpose();
 
             m_Context.InputAssembler.InputLayout = m_Layout;
@@ -96,7 +103,6 @@ namespace CityScape2
             m_Context.PixelShader.SetSampler(0, m_Sampler);
             m_Context.PixelShader.SetShaderResource(0, m_TextureView);
 
-
             DataStream mappedResource;
             m_Context.MapSubresource(m_ConstantBuffer, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
             mappedResource.Write(world);
@@ -106,7 +112,7 @@ namespace CityScape2
 
             m_Context.DrawIndexed(m_IndexCount, 0, 0);
 
-
+            return m_IndexCount/3;
         }
     }
 }
