@@ -25,7 +25,7 @@ namespace CityScape2
                 m_FPS = m_Frames/(m_Elapsed/1000.0f);
                 m_Frames = 0;
                 m_Elapsed = 0;
-                Console.WriteLine("{0} fps, {1} polys", m_FPS, polygons);
+                Console.WriteLine("{0} fps, {1} polys/frame ({2} kpolys/sec)", m_FPS, polygons, (polygons * m_FPS) / 1000);
             }
 
         }

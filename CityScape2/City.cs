@@ -37,9 +37,15 @@ namespace CityScape2
 
             var boxes = new List<IGeometry>();
 
-            for(int x = -30; x < 30; x++)
-                for (int y = -30; y < 30; y++)
-                    boxes.Add(new Box(new Vector3(x - 0.4f, -0.4f, y - 0.4f), new Vector3(x + 0.4f, 0.4f, y + 0.4f)));
+            for (int x = -50; x < 50; x++)
+            {
+                for (int y = -50; y < 50; y++)
+                {
+                    boxes.Add(new Box(new Vector3(x - 0.3f, -0.5f, y - 0.3f), new Vector3(x + 0.3f, 0.5f, y + 0.3f)));
+                    boxes.Add(new Box(new Vector3(x - 0.4f, -0.6f, y - 0.4f), new Vector3(x + 0.4f, -0.5f, y + 0.4f)));
+
+                }
+            }
 
             m_GeometryBatcher = new GeometryBatcher(boxes, 1000);
 
