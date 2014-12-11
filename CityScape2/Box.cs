@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SharpDX;
-using SharpDX.Toolkit.Graphics;
 
 namespace CityScape2
 {
     class Box : IGeometry
     {
-        private readonly ushort[] m_Indices;
-        private readonly VertexPosNormalTexture[] m_Vertices;
+        private readonly AggregateGeometry m_Aggregate;
 
         public Box(Vector3 c1, Vector3 c2)
         {
@@ -23,35 +20,17 @@ namespace CityScape2
             var bottom = new Panel(new Vector3(c2.X, c1.Y, c2.Z), new Vector2(c1.X - c2.X, c1.Z - c2.X), Panel.Plane.XZ,
                 Panel.Facing.In);
 
-            var allIndices = new List<ushort>();
-            var indices = new [] {front.Indices, back.Indices, right.Indices, left.Indices, top.Indices, bottom.Indices};
-            var baseIndex = (ushort) 0;
-            foreach (var indexSet in indices)
-            {
-                allIndices.AddRange( indexSet.Select(i => (ushort)(i + baseIndex)));
-                baseIndex += 4;
-            }
-
-            var vertices = new[] {front.Vertices, back.Vertices, right.Vertices, left.Vertices, top.Vertices, bottom.Vertices};
-            var allVertices = new List<VertexPosNormalTexture>();
-            foreach (var vertSet in vertices)
-            {
-                allVertices.AddRange(vertSet);
-            }
-
-            m_Indices = allIndices.ToArray();
-            m_Vertices = allVertices.ToArray();
+            m_Aggregate = new AggregateGeometry(front, back, right, left, top, bottom);
         }
-
 
         public IEnumerable<ushort> Indices
         {
-            get { return m_Indices; }
+            get { return m_Aggregate.Indices; }
         }
 
         public IEnumerable<VertexPosNormalTexture> Vertices
         {
-            get { return m_Vertices; }
+            get { return m_Aggregate.Vertices; }
         }
     }
 }

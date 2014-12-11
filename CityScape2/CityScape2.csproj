@@ -37,8 +37,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregateGeometry.cs" />
     <Compile Include="App.cs" />
     <Compile Include="Box.cs" />
+    <Compile Include="City.cs" />
     <Compile Include="IGeometry.cs" />
     <Compile Include="Panel.cs" />
     <Compile Include="Program.cs" />

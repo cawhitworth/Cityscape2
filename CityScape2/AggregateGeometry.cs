@@ -1,0 +1,40 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace CityScape2
+{
+    class AggregateGeometry : IGeometry
+    {
+        private ushort[] m_Indices;
+        private VertexPosNormalTexture[] m_Vertices;
+
+        public AggregateGeometry(params IGeometry[] geometries)
+        {
+            Aggregate(geometries);
+        }
+
+        public AggregateGeometry(IEnumerable<IGeometry> geometries)
+        {
+            Aggregate(geometries);
+        }
+
+        private void Aggregate(IEnumerable<IGeometry> geometries)
+        {
+            var allIndices = new List<ushort>();
+            var allVertices = new List<VertexPosNormalTexture>();
+            var baseIndex = 0;
+
+            foreach (var geometry in geometries)
+            {
+                allIndices.AddRange(geometry.Indices.Select(i => (ushort) (i + baseIndex)));
+                allVertices.AddRange(geometry.Vertices);
+                baseIndex += geometry.Vertices.Count();
+            }
+            m_Indices = allIndices.ToArray();
+            m_Vertices = allVertices.ToArray();
+        }
+
+        public IEnumerable<ushort> Indices { get { return m_Indices; }}
+        public IEnumerable<VertexPosNormalTexture> Vertices { get { return m_Vertices; }}
+    }
+}
