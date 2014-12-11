@@ -47,7 +47,7 @@ namespace CityScape2
                 }
             }
 
-            m_GeometryBatcher = new GeometryBatcher(boxes, 1000);
+            m_GeometryBatcher = new GeometryBatcher(boxes, 3000);
 
             var vertexSize = Utilities.SizeOf<Vector3>()*2 + Utilities.SizeOf<Vector2>();
 

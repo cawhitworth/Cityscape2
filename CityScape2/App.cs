@@ -48,7 +48,7 @@ namespace CityScape2
 
             var city = new City(m_Device, m_Context);
 
-            var view = Matrix.LookAtLH(new Vector3(0, 10, -20), new Vector3(0, 0, 0), Vector3.UnitY);
+            var view = Matrix.LookAtLH(new Vector3(0, 30, -50), new Vector3(0, 0, 0), Vector3.UnitY);
             view.Transpose();
             var proj = Matrix.Identity;
 
@@ -61,7 +61,7 @@ namespace CityScape2
                 if (recreate)
                 {
                     RecreateBuffers();
-                    proj = Matrix.PerspectiveFovLH((float) Math.PI/4.0f, (float) Width/Height, 0.01f, 100.0f);
+                    proj = Matrix.PerspectiveFovLH((float) Math.PI/4.0f, (float) Width/Height, 0.01f, 1000.0f);
                     proj.Transpose();
                     recreate = false;
                 }
