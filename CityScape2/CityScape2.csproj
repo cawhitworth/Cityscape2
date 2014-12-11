@@ -41,6 +41,7 @@
     <Compile Include="App.cs" />
     <Compile Include="Box.cs" />
     <Compile Include="City.cs" />
+    <Compile Include="GeometryBatcher.cs" />
     <Compile Include="IGeometry.cs" />
     <Compile Include="Overlay.cs" />
     <Compile Include="Panel.cs" />

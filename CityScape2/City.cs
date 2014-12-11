@@ -25,6 +25,7 @@ namespace CityScape2
         private Buffer m_Vertices;
         private Buffer m_Indices;
         private int m_IndexCount;
+        private GeometryBatcher m_GeometryBatcher;
 
         public City(Device device, DeviceContext context)
         {
@@ -36,15 +37,20 @@ namespace CityScape2
 
             var boxes = new List<IGeometry>();
 
-            for(int x = -20; x < 20; x++)
-                for (int y = -20; y < 20; y++)
+            for(int x = -30; x < 30; x++)
+                for (int y = -30; y < 30; y++)
                     boxes.Add(new Box(new Vector3(x - 0.4f, -0.4f, y - 0.4f), new Vector3(x + 0.4f, 0.4f, y + 0.4f)));
 
-            var aggregate = new AggregateGeometry(boxes);
+            m_GeometryBatcher = new GeometryBatcher(boxes, 1000);
 
-            m_Vertices = ToDispose(Buffer.Create(m_Device, BindFlags.VertexBuffer, aggregate.Vertices.ToArray()));
-            m_Indices = ToDispose(Buffer.Create(m_Device, BindFlags.IndexBuffer, aggregate.Indices.ToArray()));
-            m_IndexCount = aggregate.Indices.Count();
+            var vertexSize = Utilities.SizeOf<Vector3>()*2 + Utilities.SizeOf<Vector2>();
+
+            m_Vertices =
+                ToDispose(new Buffer(m_Device, vertexSize*m_GeometryBatcher.MaxVertexBatchSize, ResourceUsage.Dynamic, BindFlags.VertexBuffer,
+                    CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
+            m_Indices = 
+                ToDispose(new Buffer(m_Device, m_GeometryBatcher.MaxIndexBatchSize * 2, ResourceUsage.Dynamic, BindFlags.IndexBuffer, 
+                    CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
         }
 
         private void LoadTextures()
@@ -110,9 +116,21 @@ namespace CityScape2
             mappedResource.Write(proj);
             m_Context.UnmapSubresource(m_ConstantBuffer, 0);
 
-            m_Context.DrawIndexed(m_IndexCount, 0, 0);
+            return m_GeometryBatcher.VertexBatches.Zip(m_GeometryBatcher.IndexBatches, (vertices, indices) =>
+            {
+                m_Context.MapSubresource(m_Indices, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
+                mappedResource.WriteRange(indices);
+                m_Context.UnmapSubresource(m_Indices, 0);
 
-            return m_IndexCount/3;
+                m_Context.MapSubresource(m_Vertices, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
+                mappedResource.WriteRange(vertices);
+                m_Context.UnmapSubresource(m_Vertices, 0);
+
+                m_Context.DrawIndexed(indices.Count(), 0, 0);
+
+                return indices.Count();
+            }).Aggregate(0, (a, b) => a + b) / 3;
+
         }
     }
 }
