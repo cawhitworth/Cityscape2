@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using SharpDX;
-using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
@@ -19,11 +17,8 @@ namespace CityScape2
         private InputLayout m_Layout;
         private PixelShader m_PixelShader;
         private Buffer m_ConstantBuffer;
-        private readonly Buffer m_Vertices;
-        private readonly Buffer m_Indices;
-        private int m_IndexCount;
-        private readonly GeometryBatcher m_GeometryBatcher;
         private readonly Texture m_Texture;
+        private readonly BatchedGeometryRenderer m_BatchedRenderer;
 
         public City(Device device, DeviceContext context)
         {
@@ -46,16 +41,12 @@ namespace CityScape2
                 }
             }
 
-            m_GeometryBatcher = new GeometryBatcher(boxes, 3000);
+            var geometryBatcher = new GeometryBatcher(boxes, 3000);
 
             var vertexSize = Utilities.SizeOf<Vector3>()*2 + Utilities.SizeOf<Vector2>();
 
-            m_Vertices =
-                ToDispose(new Buffer(m_Device, vertexSize*m_GeometryBatcher.MaxVertexBatchSize, ResourceUsage.Dynamic, BindFlags.VertexBuffer,
-                    CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
-            m_Indices = 
-                ToDispose(new Buffer(m_Device, m_GeometryBatcher.MaxIndexBatchSize * 2, ResourceUsage.Dynamic, BindFlags.IndexBuffer, 
-                    CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
+            m_BatchedRenderer = new BatchedGeometryRenderer(geometryBatcher, m_Device, vertexSize, m_Layout);
+
         }
 
         private void LoadShaders()
@@ -85,12 +76,8 @@ namespace CityScape2
             var world = Matrix.RotationY(fElapsed);// * Matrix.RotationX(fElapsed * 0.7f);
             world.Transpose();
 
-            m_Context.InputAssembler.InputLayout = m_Layout;
-            m_Context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            m_Context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(m_Vertices, Utilities.SizeOf<Vector3>() * 2 + Utilities.SizeOf<Vector2>(), 0));
-            m_Context.InputAssembler.SetIndexBuffer(m_Indices, Format.R16_UInt, 0);
-            m_Context.VertexShader.SetConstantBuffer(0, m_ConstantBuffer);
             m_Context.VertexShader.Set(m_VertexShader);
+            m_Context.VertexShader.SetConstantBuffer(0, m_ConstantBuffer);
             m_Context.PixelShader.Set(m_PixelShader);
 
             m_Texture.Bind(m_Context, 0);
@@ -102,20 +89,7 @@ namespace CityScape2
             mappedResource.Write(proj);
             m_Context.UnmapSubresource(m_ConstantBuffer, 0);
 
-            return m_GeometryBatcher.VertexBatches.Zip(m_GeometryBatcher.IndexBatches, (vertices, indices) =>
-            {
-                m_Context.MapSubresource(m_Indices, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
-                mappedResource.WriteRange(indices);
-                m_Context.UnmapSubresource(m_Indices, 0);
-
-                m_Context.MapSubresource(m_Vertices, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
-                mappedResource.WriteRange(vertices);
-                m_Context.UnmapSubresource(m_Vertices, 0);
-
-                m_Context.DrawIndexed(indices.Count(), 0, 0);
-
-                return indices.Count();
-            }).Aggregate(0, (a, b) => a + b) / 3;
+            return m_BatchedRenderer.Render(m_Context);
 
         }
     }
