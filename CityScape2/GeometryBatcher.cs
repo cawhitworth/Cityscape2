@@ -38,6 +38,10 @@ namespace CityScape2
                 indexBase += geometry.Vertices.Count();
             }
 
+            if (currentIndexBatch.Count > m_MaxIndexBatchSize)
+                m_MaxIndexBatchSize = currentIndexBatch.Count;
+            if (currentVertexBatch.Count > m_MaxVertexBatchSize)
+                m_MaxVertexBatchSize = currentVertexBatch.Count;
             m_IndexBatches.Add(currentIndexBatch.ToArray());
             m_VertexBatches.Add(currentVertexBatch.ToArray());
         }

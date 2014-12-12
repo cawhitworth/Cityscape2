@@ -33,6 +33,11 @@ namespace CityScape2
             return new Texture(Texture2D.FromFile<Texture2D>(device, "texture.png"), device);
         }
 
+        public static Texture FromTexture2D(Texture2D t2d, Device device)
+        {
+            return new Texture(t2d, device);
+        }
+
         public void Bind(DeviceContext context, int slot)
         {
             context.PixelShader.SetSampler(0, m_Sampler);
