@@ -48,7 +48,7 @@ namespace CityScape2
 
             var city = new City(m_Device, m_Context);
 
-            var view = Matrix.LookAtLH(new Vector3(0, 3, -5), new Vector3(0, 0, 0), Vector3.UnitY);
+            var view = Matrix.LookAtLH(new Vector3(0, 5, -10), new Vector3(0, 2, 0), Vector3.UnitY);
             view.Transpose();
             var proj = Matrix.Identity;
 
@@ -108,7 +108,7 @@ namespace CityScape2
             };
 
             // Create device + swapchain
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, desc, out m_Device, out m_SwapChain);
+            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug, desc, out m_Device, out m_SwapChain);
             m_Context = ToDispose(m_Device.ImmediateContext);
             m_Device = ToDispose(m_Device);
             m_SwapChain = ToDispose(m_SwapChain);

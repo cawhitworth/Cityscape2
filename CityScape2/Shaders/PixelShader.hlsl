@@ -12,7 +12,7 @@ float4 main(PS_IN input) : SV_Target
 {
     float3 lightDirection = normalize(float3(1, -1, 0));
     float4 texel = txt.Sample(smpl, input.tex);
-    float lightMag = 0.2 + 0.8f * saturate(dot(input.norm, -lightDirection));
+    float lightMag = 0.5 + 0.5f * saturate(dot(input.norm, -lightDirection));
 
     return texel * lightMag;
     

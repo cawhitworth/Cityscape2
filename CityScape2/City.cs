@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using SharpDX;
 using SharpDX.Direct3D11;
@@ -18,19 +19,28 @@ namespace CityScape2
         {
             m_Context = context;
 
-            var buildingTexture = new BuildingTexture(device, context);
+            var windowSize = new Size2(8,8);
+            var textureSize = new Size2(256,256);
+
+            var storyCalculator = new StoryCalculator(textureSize, windowSize, 0.128f);
+            var buildingBuilder = new BuildingBlockBuilder(storyCalculator);
+            var buildingTexture = new BuildingTexture(device, context, textureSize, windowSize);
+
             var texture = Texture.FromTexture2D(buildingTexture.Texture, device);
+
             m_PixelShader = new PixelTextureLightShader(device, texture);
             m_VertexShader = new VertexPosNormalTextureShader(device);
 
             var boxes = new List<IGeometry>();
+            var r = new Random();
 
             for (int x = -2; x < 3; x++)
             {
                 for (int y = -2; y < 3; y++)
                 {
-                    boxes.Add(new Box(new Vector3(x - 0.3f, -0.5f, y - 0.3f), new Vector3(x + 0.3f, 0.5f, y + 0.3f)));
-                    boxes.Add(new Box(new Vector3(x - 0.4f, -0.6f, y - 0.4f), new Vector3(x + 0.4f, -0.5f, y + 0.4f)));
+                    boxes.Add(buildingBuilder.Build(
+                        new Vector3(x - 0.5f, 0, y - 0.5f),
+                        8, r.Next(32), 8));
 
                 }
             }

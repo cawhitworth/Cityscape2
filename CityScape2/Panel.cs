@@ -10,6 +10,8 @@ namespace CityScape2
         private readonly Vector2 m_Size;
         private readonly Plane m_Plane;
         private readonly Facing m_Facing;
+        private readonly Vector2 m_Tex1;
+        private readonly Vector2 m_Tex2;
         private readonly ushort[] m_Indices;
         private readonly VertexPosNormalTexture[] m_Vertices;
 
@@ -25,12 +27,14 @@ namespace CityScape2
             In, Out
         }
 
-        public Panel(Vector3 position, Vector2 size, Plane plane, Facing facing)
+        public Panel(Vector3 position, Vector2 size, Plane plane, Facing facing, Vector2 tex1, Vector2 tex2)
         {
             m_Position = position;
             m_Size = size;
             m_Plane = plane;
             m_Facing = facing;
+            m_Tex1 = tex1;
+            m_Tex2 = tex2;
 
             if (m_Facing == Facing.Out)
             {
@@ -88,13 +92,15 @@ namespace CityScape2
             if (m_Facing == Facing.In)
                 normal *= -1;
 
+            var texTL = new Vector2(m_Tex1.X, m_Tex2.Y);
+            var texBR = new Vector2(m_Tex2.X, m_Tex1.Y);
 
             return new[]
             {
-                new VertexPosNormalTexture(m_Position, normal, new Vector2(0.0f, 0.0f)),
-                new VertexPosNormalTexture(topLeft, normal, new Vector2(0.0f, 1.0f)),
-                new VertexPosNormalTexture(bottomRight, normal, new Vector2(1.0f, 0.0f)),
-                new VertexPosNormalTexture(oppositeCorner, normal, new Vector2(1.0f, 1.0f)),
+                new VertexPosNormalTexture(m_Position, normal, m_Tex1),
+                new VertexPosNormalTexture(topLeft, normal, texTL),
+                new VertexPosNormalTexture(bottomRight, normal, texBR),
+                new VertexPosNormalTexture(oppositeCorner, normal, m_Tex2),
             };
         }
 

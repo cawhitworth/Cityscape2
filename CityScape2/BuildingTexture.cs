@@ -16,12 +16,12 @@ namespace CityScape2
         private readonly Texture2D m_Texture;
         private ShaderResourceView m_TextureView;
 
-        public BuildingTexture(Device device, DeviceContext context)
+        public BuildingTexture(Device device, DeviceContext context, Size2 textureSize, Size2 windowSize)
         {
-            m_Height = 256;
-            m_Width = 256;
-            m_WindowWidth = 8;
-            m_WindowHeight = 8;
+            m_Height = textureSize.Height;
+            m_Width = textureSize.Width;
+            m_WindowWidth = windowSize.Width;
+            m_WindowHeight = windowSize.Height;
 
             var p = Pixels();
 
