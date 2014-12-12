@@ -49,6 +49,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="VertexPosNormalTexture.cs" />
+    <Compile Include="VertexPosNormalTextureShader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SharpDX">
