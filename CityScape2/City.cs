@@ -19,13 +19,11 @@ namespace CityScape2
         private InputLayout m_Layout;
         private PixelShader m_PixelShader;
         private Buffer m_ConstantBuffer;
-        private Texture2D m_Texture;
-        private ShaderResourceView m_TextureView;
-        private SamplerState m_Sampler;
-        private Buffer m_Vertices;
-        private Buffer m_Indices;
+        private readonly Buffer m_Vertices;
+        private readonly Buffer m_Indices;
         private int m_IndexCount;
-        private GeometryBatcher m_GeometryBatcher;
+        private readonly GeometryBatcher m_GeometryBatcher;
+        private readonly Texture m_Texture;
 
         public City(Device device, DeviceContext context)
         {
@@ -33,7 +31,8 @@ namespace CityScape2
             m_Context = context;
 
             LoadShaders();
-            LoadTextures();
+
+            m_Texture = Texture.FromFile("texture.png", m_Device);
 
             var boxes = new List<IGeometry>();
 
@@ -57,25 +56,6 @@ namespace CityScape2
             m_Indices = 
                 ToDispose(new Buffer(m_Device, m_GeometryBatcher.MaxIndexBatchSize * 2, ResourceUsage.Dynamic, BindFlags.IndexBuffer, 
                     CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
-        }
-
-        private void LoadTextures()
-        {
-            m_Texture = ToDispose(Texture2D.FromFile<Texture2D>(m_Device, "texture.png"));
-            m_TextureView = ToDispose(new ShaderResourceView(m_Device, m_Texture));
-            m_Sampler = new SamplerState(m_Device, new SamplerStateDescription
-            {
-                Filter = Filter.MinMagMipLinear,
-                AddressU = TextureAddressMode.Wrap,
-                AddressV = TextureAddressMode.Wrap,
-                AddressW = TextureAddressMode.Wrap,
-                BorderColor = Color.Black,
-                ComparisonFunction = Comparison.Never,
-                MaximumAnisotropy = 16,
-                MipLodBias = 0,
-                MinimumLod = 0,
-                MaximumLod = 16
-            });
         }
 
         private void LoadShaders()
@@ -112,8 +92,8 @@ namespace CityScape2
             m_Context.VertexShader.SetConstantBuffer(0, m_ConstantBuffer);
             m_Context.VertexShader.Set(m_VertexShader);
             m_Context.PixelShader.Set(m_PixelShader);
-            m_Context.PixelShader.SetSampler(0, m_Sampler);
-            m_Context.PixelShader.SetShaderResource(0, m_TextureView);
+
+            m_Texture.Bind(m_Context, 0);
 
             DataStream mappedResource;
             m_Context.MapSubresource(m_ConstantBuffer, MapMode.WriteDiscard, MapFlags.None, out mappedResource);

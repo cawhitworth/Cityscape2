@@ -46,6 +46,7 @@
     <Compile Include="Overlay.cs" />
     <Compile Include="Panel.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="VertexPosNormalTexture.cs" />
   </ItemGroup>
   <ItemGroup>
