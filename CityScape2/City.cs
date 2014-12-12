@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using SharpDX;
 using SharpDX.Direct3D11;
@@ -34,13 +35,27 @@ namespace CityScape2
             var boxes = new List<IGeometry>();
             var r = new Random();
 
-            for (int x = -20; x < 21; x++)
+            for (int x = -40; x < 41; x++)
             {
-                for (int y = -20; y < 21; y++)
+                for (int y = -40; y < 41; y++)
                 {
+                    int height;
+                    var group = r.Next(10);
+                    if (group < 3)
+                    {
+                        height = r.Next(10);
+                    }
+                    else if (group < 9)
+                    {
+                        height = r.Next(30);
+                    }
+                    else
+                    {
+                        height = r.Next(60);
+                    }
                     boxes.Add(buildingBuilder.Build(
                         new Vector3(x - 0.5f, 0, y - 0.5f),
-                        8, r.Next(32), 8));
+                        8, height, 8));
 
                 }
             }

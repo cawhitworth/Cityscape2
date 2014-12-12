@@ -48,7 +48,7 @@ namespace CityScape2
 
             var city = new City(m_Device, m_Context);
 
-            var view = Matrix.LookAtLH(new Vector3(0, 7, -20), new Vector3(0, 0, 0), Vector3.UnitY);
+            var view = Matrix.LookAtLH(new Vector3(0, 7.5f, -40), new Vector3(0, 0, 0), Vector3.UnitY);
             view.Transpose();
             var proj = Matrix.Identity;
 
@@ -95,6 +95,9 @@ namespace CityScape2
         private void CreateDeviceAndSwapChain()
         {
             m_Form = ToDispose(new RenderForm());
+
+            m_Form.Width = 1280;
+            m_Form.Height = 800;
 
             var desc = new SwapChainDescription()
             {
