@@ -48,7 +48,7 @@ namespace CityScape2
 
             var city = new City(m_Device, m_Context);
 
-            var view = Matrix.LookAtLH(new Vector3(0, 5, -10), new Vector3(0, 2, 0), Vector3.UnitY);
+            var view = Matrix.LookAtLH(new Vector3(0, 7, -20), new Vector3(0, 0, 0), Vector3.UnitY);
             view.Transpose();
             var proj = Matrix.Identity;
 
@@ -56,6 +56,7 @@ namespace CityScape2
             clock.Start();
             var overlay = new Overlay(clock.ElapsedMilliseconds);
 
+            var clearColor = new Color(0.1f, 0.1f, 0.2f, 0.0f);
             RenderLoop.Run(m_Form, () =>
             {
                 if (recreate)
@@ -68,7 +69,7 @@ namespace CityScape2
 
 
                 m_Context.ClearDepthStencilView(m_DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
-                m_Context.ClearRenderTargetView(m_RenderView, Color.CornflowerBlue);
+                m_Context.ClearRenderTargetView(m_RenderView, clearColor);
 
                 var polys = city.Draw(clock.ElapsedMilliseconds, view, proj);
                 overlay.Draw(clock.ElapsedMilliseconds, polys);
@@ -108,7 +109,7 @@ namespace CityScape2
             };
 
             // Create device + swapchain
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug, desc, out m_Device, out m_SwapChain);
+            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, desc, out m_Device, out m_SwapChain);
             m_Context = ToDispose(m_Device.ImmediateContext);
             m_Device = ToDispose(m_Device);
             m_SwapChain = ToDispose(m_SwapChain);

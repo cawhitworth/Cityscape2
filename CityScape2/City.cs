@@ -34,9 +34,9 @@ namespace CityScape2
             var boxes = new List<IGeometry>();
             var r = new Random();
 
-            for (int x = -2; x < 3; x++)
+            for (int x = -20; x < 21; x++)
             {
-                for (int y = -2; y < 3; y++)
+                for (int y = -20; y < 21; y++)
                 {
                     boxes.Add(buildingBuilder.Build(
                         new Vector3(x - 0.5f, 0, y - 0.5f),
