@@ -18,7 +18,7 @@ namespace CityScape2
         {
             m_Context = context;
 
-            var buildingTexture = new BuildingTexture(device);
+            var buildingTexture = new BuildingTexture(device, context);
             var texture = Texture.FromTexture2D(buildingTexture.Texture, device);
             m_PixelShader = new PixelTextureLightShader(device, texture);
             m_VertexShader = new VertexPosNormalTextureShader(device);
@@ -47,7 +47,7 @@ namespace CityScape2
         public int Draw(long elapsed, Matrix view, Matrix proj)
         {
             float fElapsed = elapsed / 1000.0f;
-            var world = Matrix.RotationY(fElapsed);// * Matrix.RotationX(fElapsed * 0.7f);
+            var world = Matrix.RotationY(fElapsed * 0.2f);// * Matrix.RotationX(fElapsed * 0.7f);
             world.Transpose();
 
             m_VertexShader.Bind(m_Context, world, view, proj);

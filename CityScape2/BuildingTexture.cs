@@ -14,8 +14,9 @@ namespace CityScape2
         private int m_Width;
         private readonly Random m_Rand = new Random();
         private readonly Texture2D m_Texture;
+        private ShaderResourceView m_TextureView;
 
-        public BuildingTexture(Device device)
+        public BuildingTexture(Device device, DeviceContext context)
         {
             m_Height = 256;
             m_Width = 256;
@@ -26,22 +27,25 @@ namespace CityScape2
 
             var stream = new DataStream(m_Width*m_Height*4, true, true);
             stream.WriteRange(p);
-            var data = new DataRectangle(stream.DataPointer, m_Width * 4);
+            var data = new DataBox(stream.DataPointer, m_Width * 4, m_Width * m_Height * 4);
 
             m_Texture = new Texture2D(device, new Texture2DDescription()
             {
                 ArraySize = 1,
-                BindFlags = BindFlags.ShaderResource,
+                BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
                 CpuAccessFlags = CpuAccessFlags.None,
                 Format = Format.R8G8B8A8_UNorm,
                 Height = m_Height,
                 Width = m_Width,
-                MipLevels = 1,
-                OptionFlags = ResourceOptionFlags.None,
+                MipLevels = 0,
+                OptionFlags = ResourceOptionFlags.GenerateMipMaps,
                 SampleDescription = new SampleDescription(1, 0),
                 Usage = ResourceUsage.Default
+            });
 
-            }, new [] {data});
+            context.UpdateSubresource(data, m_Texture, 0);
+            m_TextureView = ToDispose(new ShaderResourceView(device, m_Texture));
+            context.GenerateMips(m_TextureView);
         }
 
         public Texture2D Texture { get { return m_Texture; }}
