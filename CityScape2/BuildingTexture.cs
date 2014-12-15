@@ -8,10 +8,10 @@ namespace CityScape2
 {
     class BuildingTexture : Component
     {
-        private int m_WindowWidth;
-        private int m_WindowHeight;
-        private int m_Height;
-        private int m_Width;
+        private readonly int m_WindowWidth;
+        private readonly int m_WindowHeight;
+        private readonly int m_Height;
+        private readonly int m_Width;
         private readonly Random m_Rand = new Random();
         private readonly Texture2D m_Texture;
         private ShaderResourceView m_TextureView;
@@ -59,6 +59,7 @@ namespace CityScape2
                 pixels[p] = black;
             }
 
+            // Random windows
 
             for (int x = 0; x < m_Width / m_WindowWidth; x++)
             {
@@ -70,6 +71,29 @@ namespace CityScape2
                         shade += 0.75f;
 
                     DrawWindow(ref pixels, x, y, shade);
+                }
+            }
+
+            // Clusters
+
+            for (int streak = 0; streak < 10; streak++)
+            {
+                int startX = m_Rand.Next(m_Width / m_WindowWidth);
+                int startY = m_Rand.Next(m_Height / m_WindowHeight);
+                int width = m_Rand.Next(m_Width / (4 * m_WindowWidth)) + 1;
+                if (width + startX > (m_Width / m_WindowWidth)) width = (m_Width / m_WindowWidth) - startX;
+                int lines = m_Rand.Next(2) + 1;
+                if (startY - lines < 0) startY = lines;
+                for (int line = 0; line < lines; line++)
+                {
+                    for (int xx = startX; xx < startX + width; xx++)
+                    {
+                        float shade = 0.65f + (float)m_Rand.NextDouble() * 0.25f;
+                        DrawWindow(ref pixels, xx, startY - line, shade);
+                    }
+                    startX += m_Rand.Next(6) - 3;
+                    if (startX < 0) startX = 0;
+                    if (width + startX > (m_Width / m_WindowWidth)) width = (m_Width / m_WindowWidth) - startX;
                 }
             }
 
