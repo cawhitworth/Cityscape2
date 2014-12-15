@@ -4,3 +4,9 @@
 packages/*
 *.swap
 *~
+CityScape2/obj/
+Tests/bin/
+Tests/obj/
+CityScape2/bin/
+*.suo
+*.csproj.user

@@ -24,7 +24,7 @@ namespace CityScape2
                 MaximumAnisotropy = 16,
                 MipLodBias = 0,
                 MinimumLod = 0,
-                MaximumLod = 16
+                MaximumLod = float.MaxValue
             }));
         }
 

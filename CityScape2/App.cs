@@ -110,7 +110,7 @@ namespace CityScape2
             };
 
             // Create device + swapchain
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, desc, out m_Device, out m_SwapChain);
+            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug, desc, out m_Device, out m_SwapChain);
             m_Context = ToDispose(m_Device.ImmediateContext);
             m_Device = ToDispose(m_Device);
             m_SwapChain = ToDispose(m_SwapChain);
@@ -139,7 +139,7 @@ namespace CityScape2
             m_RenderView = new RenderTargetView(m_Device, m_BackBuffer);
             m_DepthBuffer = new Texture2D(m_Device, new Texture2DDescription()
             {
-                Format = Format.D32_Float,
+                Format = Format.D24_UNorm_S8_UInt,
                 ArraySize = 1,
                 MipLevels = 1,
                 Width = Width,
@@ -161,7 +161,7 @@ namespace CityScape2
                 DepthBias = 0,
                 DepthBiasClamp = 0,
                 SlopeScaledDepthBias = 0,
-                IsDepthClipEnabled = false,
+                IsDepthClipEnabled = true,
                 IsScissorEnabled = false,
                 IsMultisampleEnabled = false,
                 IsAntialiasedLineEnabled = false
