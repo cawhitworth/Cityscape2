@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using SharpDX;
-using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
+using SharpDX.DirectInput;
 using SharpDX.DXGI;
 using SharpDX.Windows;
-using Buffer = SharpDX.Direct3D11.Buffer;
 using Color = SharpDX.Color;
 using Device = SharpDX.Direct3D11.Device;
 
@@ -45,11 +40,11 @@ namespace CityScape2
 
             RecreateBuffers();
 
+            var input = new Input(m_Form.Handle);
+            var camera = new Camera(input, Width, Height);
 
             var city = new City(m_Device, m_Context);
 
-            var view = Matrix.LookAtLH(new Vector3(0, 7.5f, -40), new Vector3(0, 0, 0), Vector3.UnitY);
-            view.Transpose();
             var proj = Matrix.Identity;
 
             var clock = new Stopwatch();
@@ -58,15 +53,23 @@ namespace CityScape2
 
             var clearColor = new Color(0.1f, 0.1f, 0.2f, 0.0f);
             RenderLoop.Run(m_Form, () =>
-            {
+            {   
+                input.Update();
+                camera.Update(clock.ElapsedMilliseconds);
+                var view = camera.View;
+                view.Transpose();
+
+                if (input.IsKeyDown(Key.Escape))
+                    m_Form.Close();
+
                 if (recreate)
                 {
                     RecreateBuffers();
-                    proj = Matrix.PerspectiveFovLH((float) Math.PI/4.0f, (float) Width/Height, 0.01f, 1000.0f);
+                    camera.SetProjection(Width, Height);
+                    proj = camera.Projection;
                     proj.Transpose();
                     recreate = false;
                 }
-
 
                 m_Context.ClearDepthStencilView(m_DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
                 m_Context.ClearRenderTargetView(m_RenderView, clearColor);
@@ -77,6 +80,7 @@ namespace CityScape2
                 m_SwapChain.Present(0, PresentFlags.None);
             });
 
+            input.Dispose();
             DisposeBuffers();
             Dispose();
         }

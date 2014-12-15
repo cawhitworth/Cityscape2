@@ -71,8 +71,10 @@ namespace CityScape2
 
         public int Draw(long elapsed, Matrix view, Matrix proj)
         {
-            float fElapsed = elapsed / 1000.0f;
-            var world = Matrix.RotationY(fElapsed * 0.2f);// * Matrix.RotationX(fElapsed * 0.7f);
+            //float fElapsed = elapsed / 1000.0f;
+            //var world = Matrix.RotationY(fElapsed * 0.2f);// * Matrix.RotationX(fElapsed * 0.7f);
+
+            var world = Matrix.Identity;
             world.Transpose();
 
             m_VertexShader.Bind(m_Context, world, view, proj);

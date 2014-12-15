@@ -43,6 +43,8 @@
     <Compile Include="Box.cs" />
     <Compile Include="BuildingBlockBuilder.cs" />
     <Compile Include="BuildingTexture.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="City.cs" />
     <Compile Include="GeometryBatcher.cs" />
     <Compile Include="IGeometry.cs" />
@@ -61,6 +63,9 @@
     </Reference>
     <Reference Include="SharpDX.Direct3D11">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DirectInput">
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
