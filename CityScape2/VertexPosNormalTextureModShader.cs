@@ -7,13 +7,13 @@ using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace CityScape2
 {
-    class VertexPosNormalTextureShader : Component
+    class VertexPosNormalTextureModShader : Component
     {
         private readonly Buffer m_ConstantBuffer;
         private readonly VertexShader m_VertexShader;
         private readonly InputLayout m_Layout;
 
-        public VertexPosNormalTextureShader(Device device)
+        public VertexPosNormalTextureModShader(Device device)
         {
             var vertShaderBytecode = File.ReadAllBytes("VertexShader.cso");
             m_VertexShader = ToDispose(new VertexShader(device, vertShaderBytecode));
@@ -23,6 +23,7 @@ namespace CityScape2
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0,0),
                 new InputElement("NORMAL", 0, Format.R32G32B32_Float, 12, 0),
                 new InputElement("TEXCOORD", 0, Format.R32G32_Float, 24, 0), 
+                new InputElement("TEXCOORD", 1, Format.R32G32B32_Float, 32, 0), 
             }));
 
             m_ConstantBuffer =

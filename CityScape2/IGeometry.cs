@@ -5,6 +5,6 @@ namespace CityScape2
     internal interface IGeometry
     {
         IEnumerable<ushort> Indices { get; }
-        IEnumerable<VertexPosNormalTexture> Vertices { get; }
+        IEnumerable<VertexPosNormalTextureMod> Vertices { get; }
     }
 }

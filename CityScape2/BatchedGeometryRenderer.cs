@@ -45,7 +45,7 @@ namespace CityScape2
                 context.UnmapSubresource(m_Indices, 0);
 
                 context.MapSubresource(m_Vertices, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
-                mappedResource.WriteRange<VertexPosNormalTexture>(vertices);
+                mappedResource.WriteRange<VertexPosNormalTextureMod>(vertices);
                 context.UnmapSubresource(m_Vertices, 0);
 
                 context.DrawIndexed(indices.Count(), 0, 0);

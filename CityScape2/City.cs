@@ -12,7 +12,7 @@ namespace CityScape2
     {
         private readonly DeviceContext m_Context;
         private readonly BatchedGeometryRenderer m_BatchedRenderer;
-        private readonly VertexPosNormalTextureShader m_VertexShader;
+        private readonly VertexPosNormalTextureModShader m_VertexShader;
         private readonly PixelTextureLightShader m_PixelShader;
 
 
@@ -30,7 +30,7 @@ namespace CityScape2
             var texture = Texture.FromTexture2D(buildingTexture.Texture, device);
 
             m_PixelShader = new PixelTextureLightShader(device, texture);
-            m_VertexShader = new VertexPosNormalTextureShader(device);
+            m_VertexShader = new VertexPosNormalTextureModShader(device);
 
             var boxes = new List<IGeometry>();
             var r = new Random();
@@ -62,7 +62,7 @@ namespace CityScape2
 
             var geometryBatcher = new GeometryBatcher(boxes, 3000);
 
-            var vertexSize = Utilities.SizeOf<Vector3>()*2 + Utilities.SizeOf<Vector2>();
+            var vertexSize = Utilities.SizeOf<Vector3>()*3 + Utilities.SizeOf<Vector2>();
 
             m_BatchedRenderer = new BatchedGeometryRenderer(geometryBatcher, device, vertexSize, m_VertexShader.Layout);
 

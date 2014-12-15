@@ -10,6 +10,7 @@ struct VS_IN
     float3 pos : POSITION;
     float3 norm : NORMAL;
     float2 tex: TEXCOORD0;
+    float3 mod: TEXCOORD1;
 };
 
 struct PS_IN
@@ -18,6 +19,7 @@ struct PS_IN
     float3 norm : NORMAL;
     float2 tex: TEXCOORD0;
     float fog : TEXCOORD1;
+    float3 mod : TEXCOORD2;
 };
 
 PS_IN main(VS_IN input)
@@ -44,6 +46,9 @@ PS_IN main(VS_IN input)
     // Fogging
     float distance = length(viewPos);
     output.fog = saturate(1 / (0.1f * distance));
+
+    // Mod
+    output.mod = input.mod;
 
     return output;
 }

@@ -6,13 +6,13 @@ namespace CityScape2
     class GeometryBatcher
     {
         private readonly List<ushort[]> m_IndexBatches = new List<ushort[]>();
-        private readonly List<VertexPosNormalTexture[]> m_VertexBatches = new List<VertexPosNormalTexture[]>();
+        private readonly List<VertexPosNormalTextureMod[]> m_VertexBatches = new List<VertexPosNormalTextureMod[]>();
         private readonly int m_MaxIndexBatchSize;
         private readonly int m_MaxVertexBatchSize;
 
         public GeometryBatcher(IEnumerable<IGeometry> geometries, int desiredBatchSize)
         {
-            var currentVertexBatch = new List<VertexPosNormalTexture>();
+            var currentVertexBatch = new List<VertexPosNormalTextureMod>();
             var currentIndexBatch = new List<ushort>();
 
             m_MaxIndexBatchSize = 0;
@@ -61,7 +61,7 @@ namespace CityScape2
             get { return m_IndexBatches; }
         }
 
-        public IEnumerable<VertexPosNormalTexture[]> VertexBatches
+        public IEnumerable<VertexPosNormalTextureMod[]> VertexBatches
         {
             get { return m_VertexBatches; }
         }

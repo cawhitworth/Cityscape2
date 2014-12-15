@@ -13,7 +13,8 @@ namespace CityScape2
         private readonly Vector2 m_Tex1;
         private readonly Vector2 m_Tex2;
         private readonly ushort[] m_Indices;
-        private readonly VertexPosNormalTexture[] m_Vertices;
+        private readonly VertexPosNormalTextureMod[] m_Vertices;
+        private readonly Vector3 m_Mod;
 
         public enum Plane
         {
@@ -27,7 +28,7 @@ namespace CityScape2
             In, Out
         }
 
-        public Panel(Vector3 position, Vector2 size, Plane plane, Facing facing, Vector2 tex1, Vector2 tex2)
+        public Panel(Vector3 position, Vector2 size, Plane plane, Facing facing, Vector2 tex1, Vector2 tex2, Color mod)
         {
             m_Position = position;
             m_Size = size;
@@ -35,6 +36,7 @@ namespace CityScape2
             m_Facing = facing;
             m_Tex1 = tex1;
             m_Tex2 = tex2;
+            m_Mod = new Vector3(mod.R / 255.0f, mod.G / 255.0f, mod.B / 255.0f);
 
             if (m_Facing == Facing.Out)
             {
@@ -53,12 +55,12 @@ namespace CityScape2
             m_Vertices = CalculateVertices();
         }
 
-        public IEnumerable<VertexPosNormalTexture> Vertices
+        public IEnumerable<VertexPosNormalTextureMod> Vertices
         {
             get { return m_Vertices; }
         }
 
-        private VertexPosNormalTexture[] CalculateVertices()
+        private VertexPosNormalTextureMod[] CalculateVertices()
         {
             Vector3 normal;
             Vector3 offsetVector, oppositeCorner, topLeft, bottomRight;
@@ -97,10 +99,10 @@ namespace CityScape2
 
             return new[]
             {
-                new VertexPosNormalTexture(m_Position, normal, m_Tex1),
-                new VertexPosNormalTexture(topLeft, normal, texTL),
-                new VertexPosNormalTexture(bottomRight, normal, texBR),
-                new VertexPosNormalTexture(oppositeCorner, normal, m_Tex2),
+                new VertexPosNormalTextureMod(m_Position, normal, m_Tex1, m_Mod),
+                new VertexPosNormalTextureMod(topLeft, normal, texTL, m_Mod),
+                new VertexPosNormalTextureMod(bottomRight, normal, texBR, m_Mod),
+                new VertexPosNormalTextureMod(oppositeCorner, normal, m_Tex2, m_Mod),
             };
         }
 

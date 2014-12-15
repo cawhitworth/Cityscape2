@@ -7,7 +7,7 @@ namespace CityScape2
     class AggregateGeometry : IGeometry
     {
         private ushort[] m_Indices;
-        private VertexPosNormalTexture[] m_Vertices;
+        private VertexPosNormalTextureMod[] m_Vertices;
 
         public AggregateGeometry(params IGeometry[] geometries)
         {
@@ -22,7 +22,7 @@ namespace CityScape2
         private void Aggregate(IEnumerable<IGeometry> geometries)
         {
             var allIndices = new List<ushort>();
-            var allVertices = new List<VertexPosNormalTexture>();
+            var allVertices = new List<VertexPosNormalTextureMod>();
             ushort baseIndex = 0;
 
             foreach (var geometry in geometries)
@@ -36,6 +36,6 @@ namespace CityScape2
         }
 
         public IEnumerable<ushort> Indices { get { return m_Indices; }}
-        public IEnumerable<VertexPosNormalTexture> Vertices { get { return m_Vertices; }}
+        public IEnumerable<VertexPosNormalTextureMod> Vertices { get { return m_Vertices; }}
     }
 }
