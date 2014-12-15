@@ -55,7 +55,7 @@ namespace CityScape2
                     }
                     boxes.Add(buildingBuilder.Build(
                         new Vector3(x - 0.5f, 0, y - 0.5f),
-                        8, height, 8));
+                        7, height, 7));
 
                 }
             }
