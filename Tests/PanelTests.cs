@@ -11,11 +11,12 @@ namespace Tests
 {
     public class PanelTests
     {
+        private static readonly Vector2 Origin = new Vector2(0.0f);
 
         [Test]
         public void XY_Out_Panel()
         {
-            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XY, Panel.Facing.Out);
+            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XY, Panel.Facing.Out, Origin, Origin);
 
             var v = p.Vertices.ToArray();
 
@@ -35,7 +36,7 @@ namespace Tests
         [Test]
         public void XY_In_Panel()
         {
-            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XY, Panel.Facing.In);
+            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XY, Panel.Facing.In, Origin, Origin);
 
             var v = p.Vertices.ToArray();
 
@@ -55,7 +56,7 @@ namespace Tests
         [Test]
         public void XZ_Out_Panel()
         {
-            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XZ, Panel.Facing.Out);
+            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XZ, Panel.Facing.Out, Origin, Origin);
 
             var v = p.Vertices.ToArray();
 
@@ -75,7 +76,7 @@ namespace Tests
         [Test]
         public void XZ_In_Panel()
         {
-            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XZ, Panel.Facing.In);
+            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.XZ, Panel.Facing.In, Origin, Origin);
 
             var v = p.Vertices.ToArray();
 
@@ -95,7 +96,7 @@ namespace Tests
         [Test]
         public void YZ_Out_Panel()
         {
-            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.YZ, Panel.Facing.Out);
+            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.YZ, Panel.Facing.Out, Origin, Origin);
 
             var v = p.Vertices.ToArray();
 
@@ -115,7 +116,7 @@ namespace Tests
         [Test]
         public void YZ_In_Panel()
         {
-            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.YZ, Panel.Facing.In);
+            var p = new Panel(new Vector3(0, 0, 0), new Vector2(1, 2), Panel.Plane.YZ, Panel.Facing.In, Origin, Origin);
 
             var v = p.Vertices.ToArray();
 

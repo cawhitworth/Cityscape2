@@ -1,3 +1,6 @@
 *.dgml
 *.opensdf
 *.sdf
+packages/*
+*.swap
+*~

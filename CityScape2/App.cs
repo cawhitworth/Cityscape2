@@ -29,12 +29,6 @@ namespace CityScape2
         {
             CreateDeviceAndSwapChain();
 
-            m_Form.KeyUp += (sender, args) =>
-            {
-                if (args.KeyCode == Keys.Escape)
-                    m_Form.Close();
-            };
-
             var recreate = true;
             m_Form.Resize += (sender, args) => recreate = true;
 
