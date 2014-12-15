@@ -31,17 +31,31 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregateGeometry.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="BatchedGeometryRenderer.cs" />
     <Compile Include="Box.cs" />
+    <Compile Include="BuildingBlockBuilder.cs" />
+    <Compile Include="BuildingTexture.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="Input.cs" />
+    <Compile Include="City.cs" />
+    <Compile Include="GeometryBatcher.cs" />
     <Compile Include="IGeometry.cs" />
+    <Compile Include="Overlay.cs" />
     <Compile Include="Panel.cs" />
+    <Compile Include="PixelTextureLightShader.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="VertexPosNormalTexture.cs" />
+    <Compile Include="StoryCalculator.cs" />
+    <Compile Include="Texture.cs" />
+    <Compile Include="VertexPosNormalTextureMod.cs" />
+    <Compile Include="VertexPosNormalTextureModShader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SharpDX">
@@ -49,6 +63,9 @@
     </Reference>
     <Reference Include="SharpDX.Direct3D11">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DirectInput">
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
