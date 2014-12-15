@@ -21,7 +21,7 @@ namespace CityScape2
             m_Context = context;
 
             var windowSize = new Size2(8,8);
-            var textureSize = new Size2(256,256);
+            var textureSize = new Size2(512,512);
 
             var storyCalculator = new StoryCalculator(textureSize, windowSize, 0.128f);
             var buildingBuilder = new BuildingBlockBuilder(storyCalculator);
