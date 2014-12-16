@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography;
 using CityScape2.Geometry;
 using SharpDX;
 
@@ -7,28 +10,19 @@ namespace CityScape2.Buildings
     class BuildingBlockBuilder
     {
         private readonly StoryCalculator m_StoryCalc;
-        private readonly Random m_Random;
+        private readonly ModColor m_ModColor;
 
         public BuildingBlockBuilder(StoryCalculator storyCalc)
         {
             m_StoryCalc = storyCalc;
-            m_Random = new Random();
+            m_ModColor = new ModColor(new Random());
         }
 
         public IGeometry Build(Vector3 c1, int xStories, int yStories, int zStories)
         {
             var c2 = new Vector3(c1.X + xStories * m_StoryCalc.StorySize, c1.Y + yStories * m_StoryCalc.StorySize, c1.Z + zStories * m_StoryCalc.StorySize);
 
-            Color mod;
-            switch (m_Random.Next(3))
-            {
-                case 0: mod = new Color(1.0f, 1.0f, 0.8f, 1.0f);
-                    break;
-                case 1: mod = new Color(0.95f, 1.0f, 1.0f, 1.0f);
-                    break;
-                default: mod = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                    break;
-            }
+            var mod = m_ModColor.Pick();
 
             var tx1 = m_StoryCalc.RandomPosition();
             var tx2 = new Vector2(tx1.X + xStories, tx1.Y + yStories);
