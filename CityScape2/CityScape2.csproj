@@ -37,6 +37,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buildings\ModColor.cs" />
+    <Compile Include="Buildings\PanelledBuildingBlockBuilder.cs" />
     <Compile Include="Geometry\AggregateGeometry.cs" />
     <Compile Include="App.cs" />
     <Compile Include="Geometry\ColumnedPanel.cs" />
