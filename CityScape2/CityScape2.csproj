@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Geometry\AggregateGeometry.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="Geometry\ColumnedPanel.cs" />
     <Compile Include="Geometry\IGeometryBatcher.cs" />
     <Compile Include="IInput.cs" />
     <Compile Include="Rendering\BatchedGeometryRenderer.cs" />
