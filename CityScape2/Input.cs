@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using SharpDX;
 using SharpDX.DirectInput;
-using SharpDX.Multimedia;
 
 namespace CityScape2
 {

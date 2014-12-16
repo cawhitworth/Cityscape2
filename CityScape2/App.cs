@@ -46,9 +46,12 @@ namespace CityScape2
             var clearColor = new Color(0.1f, 0.1f, 0.2f, 0.0f);
             RenderLoop.Run(m_Form, () =>
             {   
+
+// ReSharper disable AccessToDisposedClosure
                 input.Update();
                 if (input.IsKeyDown(Key.Escape))
                     m_Form.Close();
+// ReSharper restore AccessToDisposedClosure
 
                 camera.Update(clock.ElapsedMilliseconds);
                 var view = camera.View;

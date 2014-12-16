@@ -8,7 +8,7 @@ namespace CityScape2.Buildings
         private readonly Size2 m_TextureSize;
         private readonly Size2 m_WindowSize;
         private readonly float m_StorySize;
-        private Random m_Random;
+        private readonly Random m_Random;
 
         public StoryCalculator(Size2 textureSize, Size2 windowSize, float storySize)
         {

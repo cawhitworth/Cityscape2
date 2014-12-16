@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using SharpDX;
 using SharpDX.DirectInput;
 
@@ -11,16 +10,14 @@ namespace CityScape2
         private Matrix m_Projection;
         private Matrix m_View;
         private Vector4 m_Position = new Vector4(0.0f, 10.0f, -5.0f, 1.0f);
-        private Vector2 m_MousePosition;
 
-        private float m_HAngle = 0.0f, m_VAngle = -0.25f;
+        private float m_HAngle, m_VAngle = -0.25f;
         private long m_Last;
 
         public Camera(IInput input, int width, int height)
         {
             m_Input = input;
             SetProjection(width, height);
-            m_MousePosition = new Vector2(input.MousePosition().X, input.MousePosition().Y);
         }
 
         public Matrix View { get { return m_View; } } 
@@ -42,7 +39,7 @@ namespace CityScape2
             if (m_Input.IsKeyDown(Key.LeftControl))
                 mult *= 2.0f;
 
-            var mouseDelta = m_Input.MousePosition();// - m_MousePosition;
+            var mouseDelta = m_Input.MousePosition();
 
             m_HAngle += mouseDelta.X*(elapsed/5000.0f);
             m_VAngle -= mouseDelta.Y*(elapsed/5000.0f);
@@ -87,8 +84,6 @@ namespace CityScape2
             {
                 m_Position += new Vector4(right, 0.0f)*mult*(elapsed/1000.0f);
             }
-
-            m_MousePosition = m_Input.MousePosition();
         }
 
     }

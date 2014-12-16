@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Geometry\AggregateGeometry.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="Geometry\IGeometryBatcher.cs" />
     <Compile Include="Rendering\BatchedGeometryRenderer.cs" />
     <Compile Include="Geometry\Box.cs" />
     <Compile Include="Buildings\BuildingBlockBuilder.cs" />
@@ -53,7 +54,7 @@
     <Compile Include="Rendering\PixelTextureLightShader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Buildings\StoryCalculator.cs" />
-    <Compile Include="Texture.cs" />
+    <Compile Include="Rendering\Texture.cs" />
     <Compile Include="Rendering\VertexPosNormalTextureMod.cs" />
     <Compile Include="Rendering\VertexPosNormalTextureModShader.cs" />
   </ItemGroup>

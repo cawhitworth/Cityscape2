@@ -13,11 +13,11 @@ namespace CityScape2.Rendering
     {
         private readonly Buffer m_Vertices;
         private readonly Buffer m_Indices;
-        private readonly GeometryBatcher m_GeometryBatcher;
+        private readonly IGeometryBatcher m_GeometryBatcher;
         private readonly int m_VertexSize;
         private readonly InputLayout m_Layout;
 
-        public BatchedGeometryRenderer(GeometryBatcher batcher, Device device, int vertexSize, InputLayout layout)
+        public BatchedGeometryRenderer(IGeometryBatcher batcher, Device device, int vertexSize, InputLayout layout)
         {
             m_Vertices =
                 ToDispose(new Buffer(device, vertexSize*batcher.MaxVertexBatchSize, ResourceUsage.Dynamic, BindFlags.VertexBuffer,
@@ -42,11 +42,11 @@ namespace CityScape2.Rendering
             {
                 DataStream mappedResource;
                 context.MapSubresource(m_Indices, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
-                mappedResource.WriteRange<ushort>(indices);
+                mappedResource.WriteRange(indices);
                 context.UnmapSubresource(m_Indices, 0);
 
                 context.MapSubresource(m_Vertices, MapMode.WriteDiscard, MapFlags.None, out mappedResource);
-                mappedResource.WriteRange<VertexPosNormalTextureMod>(vertices);
+                mappedResource.WriteRange(vertices);
                 context.UnmapSubresource(m_Vertices, 0);
 
                 context.DrawIndexed(indices.Count(), 0, 0);

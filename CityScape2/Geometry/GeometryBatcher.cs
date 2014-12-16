@@ -4,7 +4,7 @@ using CityScape2.Rendering;
 
 namespace CityScape2.Geometry
 {
-    class GeometryBatcher
+    class GeometryBatcher : IGeometryBatcher
     {
         private readonly List<ushort[]> m_IndexBatches = new List<ushort[]>();
         private readonly List<VertexPosNormalTextureMod[]> m_VertexBatches = new List<VertexPosNormalTextureMod[]>();

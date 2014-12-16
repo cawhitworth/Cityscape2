@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows.Forms;
 using CityScape2.Buildings;
 using CityScape2.Geometry;
 using CityScape2.Rendering;

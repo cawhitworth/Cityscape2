@@ -95,15 +95,15 @@ namespace CityScape2.Geometry
             if (m_Facing == Facing.In)
                 normal *= -1;
 
-            var texTL = new Vector2(m_Tex1.X, m_Tex2.Y);
-            var texBR = new Vector2(m_Tex2.X, m_Tex1.Y);
+            var texTopLeft = new Vector2(m_Tex1.X, m_Tex2.Y);
+            var texBottomRight = new Vector2(m_Tex2.X, m_Tex1.Y);
 
             return new[]
             {
                 new VertexPosNormalTextureMod(m_Position, normal, m_Tex1, m_Mod),
-                new VertexPosNormalTextureMod(topLeft, normal, texTL, m_Mod),
-                new VertexPosNormalTextureMod(bottomRight, normal, texBR, m_Mod),
-                new VertexPosNormalTextureMod(oppositeCorner, normal, m_Tex2, m_Mod),
+                new VertexPosNormalTextureMod(topLeft, normal, texTopLeft, m_Mod),
+                new VertexPosNormalTextureMod(bottomRight, normal, texBottomRight, m_Mod),
+                new VertexPosNormalTextureMod(oppositeCorner, normal, m_Tex2, m_Mod)
             };
         }
 

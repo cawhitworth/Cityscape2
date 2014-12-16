@@ -23,7 +23,7 @@ namespace CityScape2.Rendering
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0,0),
                 new InputElement("NORMAL", 0, Format.R32G32B32_Float, 12, 0),
                 new InputElement("TEXCOORD", 0, Format.R32G32_Float, 24, 0), 
-                new InputElement("TEXCOORD", 1, Format.R32G32B32_Float, 32, 0), 
+                new InputElement("TEXCOORD", 1, Format.R32G32B32_Float, 32, 0) 
             }));
 
             m_ConstantBuffer =
