@@ -35,18 +35,18 @@ namespace CityScape2
             var front = new Panel(c1, new Vector2(c2.X - c1.X, c2.Y - c1.Y), Panel.Plane.XY, Panel.Facing.Out, m_StoryCalc.ToTexture(tx1), m_StoryCalc.ToTexture(tx2), mod);
 
             tx1 = m_StoryCalc.RandomPosition();
-            tx2 = new Vector2(tx1.X + xStories, tx1.Y + yStories);
+            tx2 = new Vector2(tx1.X + xStories, tx1.Y - yStories);// The corner coordinates get flipped for back/left
 
             var back = new Panel(c2, new Vector2(c1.X - c2.X, c1.Y - c2.Y), Panel.Plane.XY, Panel.Facing.In, m_StoryCalc.ToTexture(tx1), m_StoryCalc.ToTexture(tx2), mod);
 
             tx1 = m_StoryCalc.RandomPosition();
-            tx2 = new Vector2(tx1.X + zStories, tx1.Y + yStories);
+            tx2 = new Vector2(tx1.X + zStories, tx1.Y + yStories); 
 
             var right = new Panel(new Vector3(c2.X, c1.Y, c1.Z), new Vector2(c2.Z - c1.Z, c2.Y - c1.Y), Panel.Plane.YZ,
                 Panel.Facing.Out, m_StoryCalc.ToTexture(tx1), m_StoryCalc.ToTexture(tx2), mod);
 
             tx1 = m_StoryCalc.RandomPosition();
-            tx2 = new Vector2(tx1.X + zStories, tx1.Y + yStories);
+            tx2 = new Vector2(tx1.X + zStories, tx1.Y - yStories);
 
             var left = new Panel(new Vector3(c1.X, c2.Y, c2.Z), new Vector2(c1.Z - c2.Z, c1.Y - c2.Y), Panel.Plane.YZ,
                 Panel.Facing.In, m_StoryCalc.ToTexture(tx1), m_StoryCalc.ToTexture(tx2), mod);
