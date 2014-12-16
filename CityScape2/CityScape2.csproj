@@ -37,25 +37,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AggregateGeometry.cs" />
+    <Compile Include="Geometry\AggregateGeometry.cs" />
     <Compile Include="App.cs" />
-    <Compile Include="BatchedGeometryRenderer.cs" />
-    <Compile Include="Box.cs" />
-    <Compile Include="BuildingBlockBuilder.cs" />
-    <Compile Include="BuildingTexture.cs" />
+    <Compile Include="Rendering\BatchedGeometryRenderer.cs" />
+    <Compile Include="Geometry\Box.cs" />
+    <Compile Include="Buildings\BuildingBlockBuilder.cs" />
+    <Compile Include="Buildings\BuildingTexture.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="City.cs" />
-    <Compile Include="GeometryBatcher.cs" />
-    <Compile Include="IGeometry.cs" />
+    <Compile Include="Geometry\GeometryBatcher.cs" />
+    <Compile Include="Geometry\IGeometry.cs" />
     <Compile Include="Overlay.cs" />
-    <Compile Include="Panel.cs" />
-    <Compile Include="PixelTextureLightShader.cs" />
+    <Compile Include="Geometry\Panel.cs" />
+    <Compile Include="Rendering\PixelTextureLightShader.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="StoryCalculator.cs" />
+    <Compile Include="Buildings\StoryCalculator.cs" />
     <Compile Include="Texture.cs" />
-    <Compile Include="VertexPosNormalTextureMod.cs" />
-    <Compile Include="VertexPosNormalTextureModShader.cs" />
+    <Compile Include="Rendering\VertexPosNormalTextureMod.cs" />
+    <Compile Include="Rendering\VertexPosNormalTextureModShader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SharpDX">

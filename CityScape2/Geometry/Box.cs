@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Drawing.Imaging;
+using CityScape2.Rendering;
 using SharpDX;
 
-namespace CityScape2
+namespace CityScape2.Geometry
 {
     class Box : IGeometry
     {

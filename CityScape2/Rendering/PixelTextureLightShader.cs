@@ -2,7 +2,7 @@
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace CityScape2
+namespace CityScape2.Rendering
 {
     class PixelTextureLightShader : Component
     {

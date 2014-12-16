@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
+using CityScape2.Buildings;
+using CityScape2.Geometry;
+using CityScape2.Rendering;
 using SharpDX;
 using SharpDX.Direct3D11;
 using Device = SharpDX.Direct3D11.Device;

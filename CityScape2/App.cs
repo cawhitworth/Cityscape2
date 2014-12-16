@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows.Forms;
+﻿using System.Diagnostics;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -9,6 +7,7 @@ using SharpDX.DXGI;
 using SharpDX.Windows;
 using Color = SharpDX.Color;
 using Device = SharpDX.Direct3D11.Device;
+using Resource = SharpDX.Direct3D11.Resource;
 
 namespace CityScape2
 {
@@ -23,7 +22,6 @@ namespace CityScape2
         private Texture2D m_DepthBuffer;
         private DepthStencilView m_DepthView;
         private Factory m_Factory;
-        private Matrix m_Proj;
 
         public void Run()
         {
@@ -49,12 +47,13 @@ namespace CityScape2
             RenderLoop.Run(m_Form, () =>
             {   
                 input.Update();
+                if (input.IsKeyDown(Key.Escape))
+                    m_Form.Close();
+
                 camera.Update(clock.ElapsedMilliseconds);
                 var view = camera.View;
                 view.Transpose();
 
-                if (input.IsKeyDown(Key.Escape))
-                    m_Form.Close();
 
                 if (recreate)
                 {
@@ -97,7 +96,7 @@ namespace CityScape2
             m_Form.Width = 1280;
             m_Form.Height = 800;
 
-            var desc = new SwapChainDescription()
+            var desc = new SwapChainDescription
             {
                 BufferCount = 1,
                 IsWindowed = true,
@@ -135,9 +134,9 @@ namespace CityScape2
             Utilities.Dispose(ref m_DepthBuffer);
             Utilities.Dispose(ref m_DepthView);
 
-            m_BackBuffer = Texture2D.FromSwapChain<Texture2D>(m_SwapChain, 0);
+            m_BackBuffer = Resource.FromSwapChain<Texture2D>(m_SwapChain, 0);
             m_RenderView = new RenderTargetView(m_Device, m_BackBuffer);
-            m_DepthBuffer = new Texture2D(m_Device, new Texture2DDescription()
+            m_DepthBuffer = new Texture2D(m_Device, new Texture2DDescription
             {
                 Format = Format.D24_UNorm_S8_UInt,
                 ArraySize = 1,
@@ -152,8 +151,7 @@ namespace CityScape2
             });
             m_DepthView = new DepthStencilView(m_Device, m_DepthBuffer);
 
-            m_Context.Rasterizer.State = new RasterizerState(m_Device, new RasterizerStateDescription(
-                )
+            m_Context.Rasterizer.State = new RasterizerState(m_Device, new RasterizerStateDescription
             {
                 FillMode = FillMode.Solid,
                 CullMode = CullMode.Back,

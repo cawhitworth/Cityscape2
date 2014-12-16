@@ -1,7 +1,7 @@
 using System;
 using SharpDX;
 
-namespace CityScape2
+namespace CityScape2.Buildings
 {
     class StoryCalculator
     {

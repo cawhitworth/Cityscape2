@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using CityScape2.Geometry;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -6,7 +7,7 @@ using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 
-namespace CityScape2
+namespace CityScape2.Rendering
 {
     class BatchedGeometryRenderer : Component
     {

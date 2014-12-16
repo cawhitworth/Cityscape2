@@ -1,7 +1,8 @@
 using System;
+using CityScape2.Geometry;
 using SharpDX;
 
-namespace CityScape2
+namespace CityScape2.Buildings
 {
     class BuildingBlockBuilder
     {

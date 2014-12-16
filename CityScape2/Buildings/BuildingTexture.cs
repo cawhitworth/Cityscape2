@@ -4,7 +4,7 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 
-namespace CityScape2
+namespace CityScape2.Buildings
 {
     class BuildingTexture : Component
     {

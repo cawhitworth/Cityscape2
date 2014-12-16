@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CityScape2;
+using CityScape2.Geometry;
 using NUnit.Framework;
 using SharpDX;
 

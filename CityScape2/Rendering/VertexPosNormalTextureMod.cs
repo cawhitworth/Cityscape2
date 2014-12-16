@@ -1,6 +1,6 @@
 using SharpDX;
 
-namespace CityScape2
+namespace CityScape2.Rendering
 {
     public struct VertexPosNormalTextureMod
     {

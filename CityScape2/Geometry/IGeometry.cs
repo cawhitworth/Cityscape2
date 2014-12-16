@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using CityScape2.Rendering;
 
-namespace CityScape2
+namespace CityScape2.Geometry
 {
     internal interface IGeometry
     {

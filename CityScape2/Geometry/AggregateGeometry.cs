@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using CityScape2.Rendering;
 
-namespace CityScape2
+namespace CityScape2.Geometry
 {
     class AggregateGeometry : IGeometry
     {
