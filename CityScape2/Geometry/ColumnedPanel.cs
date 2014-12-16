@@ -26,18 +26,19 @@ namespace CityScape2.Geometry
                     tx1 = origin;
                     tx2 = origin;
                 }
-                var size = new Vector2(width*storyCalc.StorySize, storiesHigh*storyCalc.StorySize);
+                var direction = facing == Panel.Facing.Out ? 1.0f : -1.0f;
+
+                var size = new Vector2(width*storyCalc.StorySize * direction, storiesHigh*storyCalc.StorySize * direction);
                 panels.Add(new Panel(position, size, plane, facing, storyCalc.ToTexture(tx1), storyCalc.ToTexture(tx2), mod));
 
-                var direction = facing == Panel.Facing.Out ? 1.0f : -1.0f;
                 switch (plane)
                 {
                     case Panel.Plane.XY:
                     case Panel.Plane.XZ:
-                        position.X += size.X * direction;
+                        position.X += size.X;
                         break;
                     case Panel.Plane.YZ:
-                        position.Z += size.X * direction;
+                        position.Z += size.X;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("plane");
