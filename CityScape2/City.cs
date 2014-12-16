@@ -15,6 +15,10 @@ namespace CityScape2
         private readonly BatchedGeometryRenderer m_BatchedRenderer;
         private readonly VertexPosNormalTextureModShader m_VertexShader;
         private readonly PixelTextureLightShader m_PixelShader;
+        private readonly Random m_Random;
+        private readonly StoryCalculator m_StoryCalculator;
+        private readonly BuildingBlockBuilder m_BuildingBuilder;
+        private readonly PanelledBuildingBlockBuilder m_PanelledBuilder;
 
 
         public City(Device device, DeviceContext context)
@@ -24,8 +28,10 @@ namespace CityScape2
             var windowSize = new Size2(8,8);
             var textureSize = new Size2(512,512);
 
-            var storyCalculator = new StoryCalculator(textureSize, windowSize, 0.05f);
-            var buildingBuilder = new BuildingBlockBuilder(storyCalculator);
+            m_StoryCalculator = new StoryCalculator(textureSize, windowSize, 0.05f);
+            m_BuildingBuilder = new BuildingBlockBuilder(m_StoryCalculator);
+            m_PanelledBuilder = new PanelledBuildingBlockBuilder(m_StoryCalculator);
+
             var buildingTexture = new BuildingTexture(device, context, textureSize, windowSize);
 
             var texture = Texture.FromTexture2D(buildingTexture.Texture, device);
@@ -34,52 +40,13 @@ namespace CityScape2
             m_VertexShader = new VertexPosNormalTextureModShader(device);
 
             var boxes = new List<IGeometry>();
-            var r = new Random();
-            var panelledBuilder = new PanelledBuildingBlockBuilder(storyCalculator);
+            m_Random = new Random();
+
             for (int x = -40; x < 41; x++)
             {
                 for (int y = -40; y < 41; y++)
                 {
-                    int height, xSize, zSize;
-                    var group = r.Next(10);
-                    if (group < 3)
-                    {
-                        height = r.Next(10);
-                        xSize = r.Next(10) + 10;
-                        zSize = r.Next(10) + 10;
-                    }
-                    else if (group < 9)
-                    {
-                        height = r.Next(30);
-                        xSize = r.Next(18) + 2;
-                        zSize = r.Next(18) + 2;
-                    }
-                    else
-                    {
-                        height = r.Next(60);
-                        xSize = r.Next(15) + 5;
-                        zSize = r.Next(15) + 5;
-                    }
-
-                    height += 1;
-
-                    var c1 = new Vector3(x - 0.5f, 0, y - 0.5f);
-
-
-                    c1.X += ((20 - xSize)*storyCalculator.StorySize)/2.0f;
-                    c1.Z += ((20 - zSize)*storyCalculator.StorySize)/2.0f;
-
-                    if (r.Next(10) > 7)
-                    {
-                        boxes.Add(buildingBuilder.Build(
-                            c1,
-                            xSize, height, zSize));
-                    }
-                    else
-                    {
-                        boxes.Add(panelledBuilder.Build(c1, xSize, height, zSize));
-                    }
-                    boxes.Add(new Box(new Vector3(x - 0.5f, -0.5f, y - 0.5f), new Vector3(x + 0.5f, 0.0f, y + 0.5f) ));
+                    boxes.Add(MakeBuilding(x, y));
                 }
             }
             var geometryBatcher = new GeometryBatcher(boxes, 3000);
@@ -88,6 +55,57 @@ namespace CityScape2
 
             m_BatchedRenderer = new BatchedGeometryRenderer(geometryBatcher, device, vertexSize, m_VertexShader.Layout);
 
+        }
+
+        private IGeometry MakeBuilding(int x, int y)
+        {
+            int yStories, xStories, zStories;
+            PickBuildingSize(out xStories, out yStories, out zStories);
+
+            var c1 = new Vector3(x - 0.5f, 0, y - 0.5f);
+
+            c1.X += ((20 - xStories)*m_StoryCalculator.StorySize)/2.0f;
+            c1.Z += ((20 - zStories)*m_StoryCalculator.StorySize)/2.0f;
+
+            IGeometry building;
+
+            if (m_Random.Next(10) > 7)
+            {
+                building = m_BuildingBuilder.Build(c1, xStories, yStories, zStories);
+            }
+            else
+            {
+                building = m_PanelledBuilder.Build(c1, xStories, yStories, zStories);
+            }
+
+            var buildingBase = new Box(new Vector3(x - 0.5f, -0.5f, y - 0.5f), new Vector3(x + 0.5f, 0.0f, y + 0.5f));
+
+            return new AggregateGeometry(building, buildingBase);
+        }
+
+        private void PickBuildingSize(out int xSize, out int ySize, out int zSize)
+        {
+            var sizeGroup = m_Random.Next(10);
+            if (sizeGroup < 3)
+            {
+                ySize = m_Random.Next(10);
+                xSize = m_Random.Next(10) + 10;
+                zSize = m_Random.Next(10) + 10;
+            }
+            else if (sizeGroup < 9)
+            {
+                ySize = m_Random.Next(30);
+                xSize = m_Random.Next(18) + 2;
+                zSize = m_Random.Next(18) + 2;
+            }
+            else
+            {
+                ySize = m_Random.Next(60);
+                xSize = m_Random.Next(15) + 5;
+                zSize = m_Random.Next(15) + 5;
+            }
+
+            ySize += 1;
         }
 
 
