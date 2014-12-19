@@ -6,17 +6,21 @@ using SharpDX;
 
 namespace CityScape2.Buildings
 {
-    class PanelledBuildingBlockBuilder
+    class ColumnedBuildingBlockBuilder
     {
         private readonly StoryCalculator m_StoryCalc;
         private readonly ModColor m_ModColor;
         private readonly Random m_Random;
+        private Func<int, IEnumerable<int>> m_GenerateColumns;
 
-        public PanelledBuildingBlockBuilder(StoryCalculator storyCalculator)
+        public ColumnedBuildingBlockBuilder(StoryCalculator storyCalculator, Func<int, IEnumerable<int>> generateColumns = null)
         {
             m_StoryCalc = storyCalculator;
             m_Random = new Random();
             m_ModColor = new ModColor(m_Random);
+            if (generateColumns == null)
+                generateColumns = GenerateColumns;
+            m_GenerateColumns = generateColumns;
         }
 
         public IGeometry Build(Vector3 c1, int xStories, int yStories, int zStories)
@@ -26,8 +30,8 @@ namespace CityScape2.Buildings
 
             var mod = m_ModColor.Pick();
 
-            var storyWidthsX = GenerateColumns(xStories).ToArray();
-            var storyWidthsZ = GenerateColumns(zStories).ToArray();
+            var storyWidthsX = m_GenerateColumns(xStories).ToArray();
+            var storyWidthsZ = m_GenerateColumns(zStories).ToArray();
 
             var front = new ColumnedPanel(c1, yStories, storyWidthsX, Panel.Plane.XY, Panel.Facing.Out, mod, m_StoryCalc);
             var back = new ColumnedPanel(c2, yStories, storyWidthsX, Panel.Plane.XY, Panel.Facing.In, mod, m_StoryCalc);

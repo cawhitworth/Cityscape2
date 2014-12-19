@@ -18,7 +18,7 @@ namespace CityScape2
         private readonly Random m_Random;
         private readonly StoryCalculator m_StoryCalculator;
         private readonly BuildingBlockBuilder m_BuildingBuilder;
-        private readonly PanelledBuildingBlockBuilder m_PanelledBuilder;
+        private readonly ColumnedBuildingBlockBuilder m_ColumnedBuilder;
 
 
         public City(Device device, DeviceContext context)
@@ -30,7 +30,7 @@ namespace CityScape2
 
             m_StoryCalculator = new StoryCalculator(textureSize, windowSize, 0.05f);
             m_BuildingBuilder = new BuildingBlockBuilder(m_StoryCalculator);
-            m_PanelledBuilder = new PanelledBuildingBlockBuilder(m_StoryCalculator);
+            m_ColumnedBuilder = new ColumnedBuildingBlockBuilder(m_StoryCalculator);
 
             var buildingTexture = new BuildingTexture(device, context, textureSize, windowSize);
 
@@ -69,18 +69,34 @@ namespace CityScape2
 
             IGeometry building;
 
-            if (m_Random.Next(10) > 7)
+            var buildingPick = m_Random.Next(10);
+
+            if (yStories > 15)
             {
-                building = m_BuildingBuilder.Build(c1, xStories, yStories, zStories);
+                if (buildingPick > 7)
+                {
+                    building = m_BuildingBuilder.Build(c1, xStories, yStories, zStories);
+                }
+                else
+                {
+                    building = new ClassicBuilding(c1, xStories, yStories, zStories, m_StoryCalculator);
+                }
             }
             else
             {
-                building = m_PanelledBuilder.Build(c1, xStories, yStories, zStories);
+                if (buildingPick > 7)
+                {
+                    building = m_BuildingBuilder.Build(c1, xStories, yStories, zStories);
+                }
+                else 
+                {
+                    building = m_ColumnedBuilder.Build(c1, xStories, yStories, zStories);
+                }
             }
 
             var buildingBase = new Box(new Vector3(x - 0.5f, -0.5f, y - 0.5f), new Vector3(x + 0.5f, 0.0f, y + 0.5f));
 
-            return new AggregateGeometry(building, buildingBase);
+            return new AggregateGeometry(buildingBase, building);
         }
 
         private void PickBuildingSize(out int xSize, out int ySize, out int zSize)

@@ -9,7 +9,7 @@ namespace CityScape2
         private readonly IInput m_Input;
         private Matrix m_Projection;
         private Matrix m_View;
-        private Vector4 m_Position = new Vector4(0.0f, 5.0f, -5.0f, 1.0f);
+        private Vector4 m_Position = new Vector4(0.0f, 5.0f, 5.0f, 1.0f);
 
         private float m_HAngle, m_VAngle = -0.25f;
         private long m_Last;

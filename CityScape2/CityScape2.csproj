@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,8 +37,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buildings\ClassicBuilding.cs" />
     <Compile Include="Buildings\ModColor.cs" />
-    <Compile Include="Buildings\PanelledBuildingBlockBuilder.cs" />
+    <Compile Include="Buildings\ColumnedBuildingBlockBuilder.cs" />
     <Compile Include="Geometry\AggregateGeometry.cs" />
     <Compile Include="App.cs" />
     <Compile Include="Geometry\ColumnedPanel.cs" />
